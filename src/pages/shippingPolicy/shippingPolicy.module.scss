@@ -1,0 +1,24 @@
+
+.shippingSection{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    
+
+    &__pageWidth{
+        max-width: 50rem;
+        padding: 0;
+        h1{
+            font-size: 4rem;
+            font-weight: 300;
+        }
+    }
+    &__rte{
+        p, ol, li{
+            color: gray;
+        }
+    }
+}
+
+

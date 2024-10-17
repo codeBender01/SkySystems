@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "Mulish";
+  src: url("../public/fonts/Mulish-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url("../public/fonts/Gilroy-Regular.ttf") format("truetype");
+}
+
+* {
+  font-family: Mulish;
+}
+
+body {
+  margin: 0;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  font-family: Mulish, sans-serif;
+}

@@ -1,0 +1,44 @@
+@font-face {
+  font-family: "Gilroy";
+  src: url("../src/assets/Gilroy-Regular.ttf") format("truetype");
+}
+
+.breadcrumb {
+  display: flex;
+  padding-bottom: 25px;
+  font-family: 'Gilroy' !important;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  span{
+    font-family: 'Gilroy' !important;
+    font-size: 14px;
+    background-color: #fff;
+    padding: 0;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    color: #808080;
+    font-weight: 500;
+    svg{
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.stepLabel {
+  flex-grow: 1;
+}
+
+.active .stepLabel {
+  color: #121212;
+}
+
+.editIcon {
+  margin-left: 10px;
+  cursor: pointer;
+}

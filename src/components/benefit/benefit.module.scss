@@ -1,0 +1,64 @@
+.body {
+  display: flex;
+  font-family: "Mulish";
+  //height: 320px; /* Ensure the container takes the full height of the viewport */
+  //overflow: hidden; /* Prevent the body from scrolling */
+  @media screen and (max-width: 770px) {
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+.leftColumn {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 80px;
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  height: 150px;
+  top: 0; /* Sticks the left column to the top of the viewport */
+  @media screen and (max-width: 770px) {
+    width: auto;
+    padding: 15px;
+    border-bottom: 1px solid black;
+  }
+  @media screen and (max-width: 520px) {
+    position: relative;
+  }
+  h2 {
+    font-size: 50px;
+    font-weight: 600;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  gap: 10px;
+  width: 50%;
+  padding: 80px;
+  flex-direction: column;
+  border-left: 1px solid black;
+  //height: 150px; /* Ensure the right column takes the full height of the viewport */
+  overflow-y: visible; /* Make the right column scrollable */
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  @media screen and (max-width: 770px) {
+    width: auto;
+    padding: 15px;
+    height: 250px;
+  }
+  @media screen and (max-width: 520px) {
+    height: auto;
+  }
+}
+
+.rightColumn::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+.line {
+  width: 100%;
+  background-color: black;
+  height: 1px;
+}

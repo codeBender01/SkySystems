@@ -1,0 +1,206 @@
+.checkoutContainer {
+  width: 45%;
+
+  @media screen and (min-width: 770px) {
+    flex-direction: row;
+  }
+
+  p {
+    font-family: Gilroy;
+  }
+
+  .formSection,
+  .summarySection {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    padding: 40px 80px;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 770px) {
+      padding: 15px;
+      width: auto;
+      max-width: 100%;
+    }
+  }
+
+  .summarySection {
+    background-color: #f5f5f7;
+    transition: max-height 0.3s ease-in-out;
+    overflow: hidden;
+
+    @media screen and (max-width: 770px) {
+      max-height: 0;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    &.show {
+      max-height: 1000px; // Or whatever large value that covers the content height
+      visibility: visible;
+      opacity: 1;
+    }
+
+    @media screen and (min-width: 771px) {
+      max-height: none;
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  .formSection {
+    p {
+      font-size: 18px;
+      color: #d2d2d7;
+      margin: 0;
+    }
+  }
+
+  span {
+    font-family: "Gilroy" !important;
+    font-size: 16px;
+    background-color: #d2d2d7;
+    padding: 40px;
+  }
+
+  .formSection h2,
+  .summarySection h3,
+  h4 {
+    margin-bottom: 10px;
+    color: #121212;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: "Gilroy" !important;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: "Gilroy" !important;
+  }
+
+  input {
+    padding: 10px;
+    height: 33px;
+  }
+
+  button {
+    padding: 16px 24px 14px 24px;
+    border: none;
+    background-color: #121212;
+    color: #ffffff;
+    cursor: pointer;
+    height: 56px;
+    font-family: "Gilroy" !important;
+  }
+
+  button.secureCheckout {
+    margin-top: 10px;
+  }
+
+  .alternativePayment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .applePay,
+  .googlePay {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .orderSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+
+  .orderSummary img {
+    width: 160px;
+    height: 160px;
+    margin-right: 10px;
+  }
+
+  .totalSection {
+    display: flex;
+    flex-direction: column;
+
+    &__gift {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      input {
+        width: 50%;
+      }
+    }
+  }
+
+  .subtotals {
+    display: flex;
+    justify-content: space-between;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    &__total {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+.line {
+  width: 100%;
+  background-color: #d2d2d7;
+  height: 1px;
+}
+
+.secureCheckout {
+  display: flex;
+  align-items: center;
+  margin-top: 80px;
+  justify-content: center;
+}
+
+.summaryTitle {
+  background-color: #f5f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 15px 0 15px;
+  @media screen and (min-width: 770px) {
+    display: none;
+  }
+}
+.toggleSummaryButton {
+  display: none;
+  padding: 0;
+  background-color: #f5f5f7 !important;
+  color: #121212 !important;
+  border: none;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center;
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media screen and (max-width: 770px) {
+    display: block;
+  }
+}

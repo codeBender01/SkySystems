@@ -1,0 +1,57 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media screen and (max-width: 520px) {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 80px;
+  gap: 30px;
+  text-align: center;
+  h1 {
+    font-size: 56px;
+    font-weight: 600;
+    @media screen and (max-width: 770px) {
+      font-size: 46px;
+    }
+  }
+  span {
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+    color: #979797;
+  }
+  button {
+    width: 194px;
+    height: 50px;
+    border: 1px solid black;
+    color: #000000;
+    background-color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+.photos {
+  display: flex;
+  gap: 20px;
+  @media screen and (max-width: 770px) {
+    flex-direction: column;
+  }
+
+  div {
+    transform: translateY(50px); /* Initial transform for the animation */
+  }
+
+  div:nth-child(2) {
+    margin-top: -50px; /* Adjust the value to move the middle image up */
+  }
+}
