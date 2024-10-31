@@ -24,6 +24,7 @@ const LoginForm = lazy(() => import("../pages/login"));
 const SearchResults = lazy(() => import("../pages/search"));
 const Collections = lazy(() => import("../pages/allCollections"));
 const Categories = lazy(() => import("../pages/allCategories"));
+const NewHome = lazy(() => import("../pages/NewHome/index"));
 
 //Admin
 
@@ -48,7 +49,7 @@ export default function Router() {
       ),
       path: "/",
       children: [
-        { path: "/", element: <Home /> },
+        { path: "/", element: <NewHome /> },
         { path: "/terms-conditions", element: <TermsAndConditions /> },
         { path: "/shipping-policy", element: <ShippingPolicy /> },
         { path: "/privacy-policy", element: <PrivacyPolicy /> },
@@ -71,6 +72,7 @@ export default function Router() {
       ),
       path: "/client-auth/signup",
     },
+
     {
       element: (
         <Suspense fallback={<Loading />}>

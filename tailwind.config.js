@@ -16,6 +16,8 @@ export default {
       accepted: "#008000",
       darkGray: "#A9A9A9",
       orangeLogo: "#E56209",
+      headerGray: "#565656",
+      headerGrayTwo: "#6f6f6f",
     },
     fontFamily: {
       main: ["InterReg", "sans-serif"],
@@ -24,14 +26,31 @@ export default {
       man: ["ManRope", "sans-serif"],
       mul: ["Mulish", "sans-serif"],
       gilroy: ["Gilroy", "sans-serif"],
+      cat: ["Cat", "sans-serif"],
     },
     borderRadius: {
       md: "8px",
+      round: "50%",
     },
     fontSize: {
       sm: "14px",
       md: "18px",
+      md2: "20px",
       lg: "24px",
+    },
+    animation: {
+      "fade-in": "fadeIn 0.3s forwards",
+      "fade-out": "fadeOut 0.3s forwards",
+    },
+    keyframes: {
+      fadeIn: {
+        "0%": { opacity: "0" },
+        "100%": { opacity: "1" },
+      },
+      fadeOut: {
+        "0%": { opacity: "1" },
+        "100%": { opacity: "0" },
+      },
     },
   },
   plugins: [],

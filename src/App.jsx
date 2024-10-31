@@ -3,8 +3,6 @@ import Loading from "./pages/Loading";
 
 import { useState, useEffect } from "react";
 
-import "./App.css";
-
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
