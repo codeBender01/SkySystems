@@ -83,7 +83,7 @@ export default function NewHome() {
             return (
               <div
                 key={n}
-                className="w-[49%] md:w-[22%] flex flex-col items-center"
+                className="w-[48%] md:w-[22%] flex flex-col items-center"
               >
                 <div
                   className="w-[100%] h-[280px] relative"
