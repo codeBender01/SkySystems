@@ -41,6 +41,8 @@ export default {
     animation: {
       "fade-in": "fadeIn 0.3s forwards",
       "fade-out": "fadeOut 0.3s forwards",
+      "slide-in": "slideIn 0.3s forwards",
+      "slide-out": "slideOut 0.3s forwards",
     },
     keyframes: {
       fadeIn: {
@@ -50,6 +52,14 @@ export default {
       fadeOut: {
         "0%": { opacity: "1" },
         "100%": { opacity: "0" },
+      },
+      slideIn: {
+        "0%": { translateX: "-200%" },
+        "100%": { translateX: "0" },
+      },
+      slideOut: {
+        "0%": { translateX: "0" },
+        "100%": { translateX: "-200%" },
       },
     },
   },

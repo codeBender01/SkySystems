@@ -21,10 +21,10 @@ export default function NewHome() {
 
   return (
     <div>
-      <div className="px-[120px] mt-4">
+      <div className="px-[20px] md:px-[120px] mt-4">
         <Swiper loop onSwiper={(swiper) => setSwiperInst(swiper)}>
           <SwiperSlide>
-            <div className="w-[100%] h-[580px]">
+            <div className="w-[100%] h-[690px] md:h-[580px]">
               <img
                 src={product}
                 className="w-[100%] h-[100%] object-cover"
@@ -33,7 +33,7 @@ export default function NewHome() {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="w-[100%] h-[580px]">
+            <div className="w-[100%] h-[690px] md:h-[580px]">
               <img
                 src={product}
                 className="w-[100%] h-[100%] object-cover"
@@ -42,7 +42,7 @@ export default function NewHome() {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="w-[100%] h-[580px]">
+            <div className="w-[100%] h-[690px] md:h-[580px]">
               <img
                 src={product}
                 className="w-[100%] h-[100%] object-cover"
@@ -51,7 +51,7 @@ export default function NewHome() {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="w-[100%] h-[580px]">
+            <div className="w-[100%] h-[690px] md:h-[580px]">
               <img
                 src={product}
                 className="w-[100%] h-[100%] object-cover"
@@ -76,14 +76,17 @@ export default function NewHome() {
         </div>
       </div>
 
-      <div className="px-[120px] flex flex-col items-center mt-[30px]">
+      <div className="px-[20px] md:px-[120px] flex flex-col items-center mt-[30px]">
         <div className="text-lg text-[#606060] font-cat">Category name</div>
-        <div className="flex justify-between items-center w-[100%]">
+        <div className="flex justify-between items-center w-[100%] flex-wrap gap-2">
           {[1, 2, 3, 4].map((n) => {
             return (
-              <div key={n} className="flex flex-col items-center">
+              <div
+                key={n}
+                className="w-[49%] md:w-[22%] flex flex-col items-center"
+              >
                 <div
-                  className="w-[280px] h-[280px] relative"
+                  className="w-[100%] h-[280px] relative"
                   onMouseEnter={() => {
                     setHoveredImgId(n);
                     setIsHovered(true);
@@ -123,22 +126,22 @@ export default function NewHome() {
         </div>
       </div>
 
-      <div className="mt-[70px] px-[120px] w-[100%] flex items-center justify-between">
-        <div className="w-[32%] h-[380px] overflow-hidden group/zoom">
+      <div className="mt-[70px] px-[20px] flex-col md:px-[120px] md:flex-row w-[100%] gap-2 md:gap-0 flex items-center justify-between">
+        <div className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom">
           <img
             src={product}
             className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"
             alt=""
           />
         </div>
-        <div className="w-[32%] h-[380px] overflow-hidden group/zoom">
+        <div className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom">
           <img
             src={product2}
             className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"
             alt=""
           />
         </div>
-        <div className="w-[32%] h-[380px] overflow-hidden group/zoom">
+        <div className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom">
           <img
             src={product3}
             className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"

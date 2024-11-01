@@ -7,8 +7,10 @@ import { BsPersonCircle } from "react-icons/bs";
 import { FiHeart } from "react-icons/fi";
 import { GiShoppingBag } from "react-icons/gi";
 import { TfiClose } from "react-icons/tfi";
+import { AiOutlineMenu } from "react-icons/ai";
 
 import { Modal, Divider, Input } from "antd";
+import HeaderMenu from "../HeaderMenu";
 
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -61,11 +63,23 @@ export default function NewHeader() {
 
   const [openWishList, setOpenWishList] = useState(false);
   const [openSearchBar, setOpenSearchBar] = useState(false);
+  const [openHeaderMenu, setOpenHeaderMenu] = useState(false);
 
   return (
     <header className="pt-[7px] px-4 w-[100%] relative">
-      <div className="flex justify-end items-center">
-        <div className="z-50 relative border-[1px] border-headerGray flex items-center text-headerGrayTwo font-cat p-[11px] gap-[10px] cursor-pointer rounded-[2px] group-hover:text-blackMain group/edit duration-150">
+      <div className="flex justify-between md:justify-end md:p-0 py-2 items-center">
+        <div
+          onClick={() => {
+            setOpenHeaderMenu(!openHeaderMenu);
+          }}
+          className="block md:hidden text-headerGray hover:text-blackMain duration-150 cursor-pointer"
+        >
+          <AiOutlineMenu size={22} />
+        </div>
+        <div className="flex ml-[120px] md:hidden justify-center h-[50px] w-[160]">
+          <img src={logo} alt="" className="w-[100%] h-[100%]" />
+        </div>
+        <div className="z-50 relative border-[1px] border-headerGray hidden md:flex items-center text-headerGrayTwo font-cat p-[11px] gap-[10px] cursor-pointer rounded-[2px] group-hover:text-blackMain group/edit duration-150">
           <div className="flex items-center uppercase text-sm font-bold">
             eur
             <FaEuroSign />
@@ -87,31 +101,33 @@ export default function NewHeader() {
             })}
           </ul>
         </div>
-        <div className="text-headerGrayTwo ml-4 hover:text-blackMain duration-150 cursor-pointer">
-          <IoSearchOutline
-            onClick={() => setOpenSearchBar(!openSearchBar)}
-            size={22}
-          />
-        </div>
-        <div className="text-headerGrayTwo mx-[12px] hover:text-blackMain duration-150 cursor-pointer">
-          <BsPersonCircle
-            onClick={() => {
-              navigate("/client-auth/login");
-            }}
-            size={22}
-          />
-        </div>
-        <div className="text-headerGrayTwo mr-[30px] hover:text-blackMain duration-150 cursor-pointer">
-          <FiHeart onClick={() => setOpenWishList(!openWishList)} size={22} />
-        </div>
-        <div className="text-headerGrayTwo hover:text-blackMain duration-150 cursor-pointer">
-          <GiShoppingBag size={20} />
+        <div className="flex items-center">
+          <div className="text-headerGrayTwo ml-4 hover:text-blackMain duration-150 cursor-pointer">
+            <IoSearchOutline
+              onClick={() => setOpenSearchBar(!openSearchBar)}
+              size={22}
+            />
+          </div>
+          <div className="text-headerGrayTwo mx-[12px] hover:text-blackMain duration-150 cursor-pointer">
+            <BsPersonCircle
+              onClick={() => {
+                navigate("/client-auth/login");
+              }}
+              size={22}
+            />
+          </div>
+          <div className="text-headerGrayTwo mr-[30px] hover:text-blackMain duration-150 cursor-pointer">
+            <FiHeart onClick={() => setOpenWishList(!openWishList)} size={22} />
+          </div>
+          <div className="text-headerGrayTwo hover:text-blackMain duration-150 cursor-pointer">
+            <GiShoppingBag size={20} />
+          </div>
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="hidden md:flex justify-center">
         <img src={logo} alt="" />
       </div>
-      <ul className="flex items-center justify-center gap-[40px]">
+      <ul className="hidden md:flex items-center justify-center gap-[40px]">
         {arr.map((l, i) => {
           return (
             <li
@@ -180,6 +196,7 @@ export default function NewHeader() {
           prefix={<IoSearchOutline />}
         />
       </div>
+      <HeaderMenu open={openHeaderMenu} />
     </header>
   );
 }
