@@ -76,7 +76,7 @@ export default function NewHeader() {
         >
           <AiOutlineMenu size={22} />
         </div>
-        <div className="flex ml-[120px] md:hidden justify-center h-[50px] w-[160]">
+        <div className="flex ml-[100px] md:hidden justify-center h-[50px] w-[140]">
           <img src={logo} alt="" className="w-[100%] h-[100%]" />
         </div>
         <div className="z-50 relative border-[1px] border-headerGray hidden md:flex items-center text-headerGrayTwo font-cat p-[11px] gap-[10px] cursor-pointer rounded-[2px] group-hover:text-blackMain group/edit duration-150">
@@ -116,7 +116,7 @@ export default function NewHeader() {
               size={22}
             />
           </div>
-          <div className="text-headerGrayTwo mr-[30px] hover:text-blackMain duration-150 cursor-pointer">
+          <div className="text-headerGrayTwo mr-[10px] md:mr-[30px] hover:text-blackMain duration-150 cursor-pointer">
             <FiHeart onClick={() => setOpenWishList(!openWishList)} size={22} />
           </div>
           <div className="text-headerGrayTwo hover:text-blackMain duration-150 cursor-pointer">
