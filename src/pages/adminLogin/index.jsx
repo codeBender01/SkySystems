@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 import { Form, Button, Input, message } from "antd";
 
-import { useDispatch } from "react-redux";
-import { adminLogin } from "../../store/adminAuth";
+import { useAdminLoginMutation } from "../../store/services/auth";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 export default function AdminLogin() {
   const [loginData, setLoginData] = useState({
@@ -14,7 +16,20 @@ export default function AdminLogin() {
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const dispatch = useDispatch();
+  const [loginAdmin, { isError, isSuccess, data, isLoading }] =
+    useAdminLoginMutation();
+
+  useEffect(() => {
+    if (isError) {
+      message.error("Error: Wrong username or password");
+    } else if (isSuccess) {
+      message.success("Success!");
+      cookies.set("adminAccessToken", data.accessToken);
+      cookies.set("adminRefreshToken", data.refreshToken);
+      navigate("/admin");
+    }
+  }, [isSuccess, isError]);
+
   const navigate = useNavigate();
 
   return (
@@ -33,24 +48,8 @@ export default function AdminLogin() {
         style={{
           boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
         }}
-        onFinish={() => {
-          dispatch(adminLogin(loginData)).then((res) => {
-            if (res.payload === 404) {
-              messageApi.open({
-                type: "error",
-                content: "User not found",
-              });
-              return;
-            } else if (res.payload === 400) {
-              messageApi.open({
-                type: "error",
-                content: "Password is incorrect",
-              });
-              return;
-            }
-
-            navigate("/admin", { state: res.payload.accessToken });
-          });
+        onFinish={async () => {
+          const res = await loginAdmin(loginData).unwrap();
         }}
       >
         <Form.Item
@@ -93,6 +92,7 @@ export default function AdminLogin() {
         </Form.Item>
         <Form.Item className="w-[60%]">
           <Button
+            loading={isLoading}
             htmlType="submit"
             className="bg-blackMain text-white text-md w-[100%] py-4"
           >

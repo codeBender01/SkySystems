@@ -2,8 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import categoryReducer from "./category/categorySlice";
 import categoryProductsReducer from "./category/categoryProductsSlice";
 
-import adminCategories from "./adminCategories";
-import adminAuth from "./adminAuth";
 import adminProducts from "./adminProducts";
 import adminCollection from "./adminCollection";
 import userAuth from "./userAuth";
@@ -15,12 +13,15 @@ import clientCollections from "./clientCollections";
 import clientCategories from "./clientCategories";
 import basket from "./basket";
 
+import authSlice from "./auth/index.jsx";
+
+import { categoriesApi } from "./services/categoriesApi";
+import { authApi } from "./services/auth";
+
 export const store = configureStore({
   reducer: {
     categories: categoryReducer,
     categoryproducts: categoryProductsReducer,
-    adminCategories,
-    adminAuth,
     adminProducts,
     adminCollection,
     userAuth,
@@ -31,5 +32,10 @@ export const store = configureStore({
     clientCollections,
     clientCategories,
     basket,
+    [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [authApi.reducerPath]: authApi.reducer,
+    authSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(categoriesApi.middleware, authApi.middleware),
 });

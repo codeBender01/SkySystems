@@ -7,6 +7,8 @@ import { FiHeart } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
+import { useGetCategoriesQuery } from "../../store/services/categoriesApi";
+
 import product from "../../assets/productBig.png";
 import product2 from "../../assets/Rectangle2.png";
 import product3 from "../../assets/Rectangle3.png";
@@ -18,6 +20,8 @@ export default function NewHome() {
   const [swiperInst, setSwiperInst] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredImgId, setHoveredImgId] = useState(null);
+
+  const { data: categories } = useGetCategoriesQuery();
 
   return (
     <div>

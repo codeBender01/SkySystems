@@ -1,9 +1,7 @@
-import React from "react";
+import { useEffect } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-
-import { adminLogout } from "../../store/adminAuth";
+import { useRefreshTokenQuery } from "../../store/services/auth";
 
 import Cookies from "universal-cookie";
 
@@ -62,7 +60,6 @@ const cookies = new Cookies();
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   return (
     <div
@@ -100,10 +97,9 @@ export default function Sidebar() {
       <div className="bg-paleGray w-[100%] h-[2px] mt-32"></div>
 
       <div
-        onClick={() => {
-          dispatch(adminLogout());
+        onClick={async () => {
           cookies.remove("adminAccessToken", { path: "/" });
-          navigate("/admin/login");
+          navigate("/");
         }}
         className="mt-auto bg-btnRed text-white w-[80%] text-center py-2 rounded-md text-md hover:opacity-85 duration-100 cursor-pointer"
       >

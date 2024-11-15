@@ -11,7 +11,6 @@ import AdminLogin from "../pages/adminLogin";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Pages
-const Home = lazy(() => import("../pages/home/home"));
 const Product = lazy(() => import("../pages/product/index"));
 const CheckoutForm = lazy(() => import("../pages/checkout"));
 const TermsAndConditions = lazy(() => import("../pages/termsAndCond"));

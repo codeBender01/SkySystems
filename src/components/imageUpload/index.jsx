@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 
 import { Upload, Modal, message } from "antd";
 
@@ -13,15 +12,10 @@ export default function ImageUpload({
   uploadMethod,
   itemId,
   deleteMethod,
-  getMethod,
-  pageUpdate,
-  setPageUpdate,
-  colorId,
+  currentItem,
 }) {
   const [fileList, setFileList] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
-
-  const dispatch = useDispatch();
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
@@ -40,38 +34,19 @@ export default function ImageUpload({
   };
 
   useEffect(() => {
-    if (itemId !== "") {
-      dispatch(getMethod(itemId)).then((res) => {
-        if (res.payload.category) {
-          const fList =
-            res.payload &&
-            res.payload.category.medias.map((img) => {
-              return {
-                id: img.id,
-                uid: img.id,
-                name: img.originalName,
-                status: "done",
-                url: img.filePath,
-              };
-            });
-          setFileList(fList);
-        } else if (res.payload.collection) {
-          const fList =
-            res.payload &&
-            res.payload.collection.medias.map((img) => {
-              return {
-                id: img.id,
-                uid: img.id,
-                name: img.originalName,
-                status: "done",
-                url: img.filePath,
-              };
-            });
-          setFileList(fList);
-        }
+    if (currentItem.medias) {
+      const fList = currentItem.medias.map((img) => {
+        return {
+          id: img.id,
+          uid: img.id,
+          name: img.originalName,
+          status: "done",
+          url: img.filePath,
+        };
       });
+      setFileList(fList);
     }
-  }, [pageUpdate, itemId]);
+  }, [currentItem]);
 
   const uploadButton = (
     <button
@@ -100,30 +75,23 @@ export default function ImageUpload({
         fileList={fileList}
         listType="picture-card"
         onChange={handleChange}
-        customRequest={(options) => {
+        customRequest={async (options) => {
           const { onSuccess } = options;
           const formData = new FormData();
 
           formData.append("file", fileList[fileList.length - 1].originFileObj);
-          dispatch(uploadMethod({ id: itemId, image: formData }))
-            .unwrap()
-            .then((res) => {
-              onSuccess("done");
-              displayMessage(res);
-              setOpenModal(false);
-              setTimeout(() => {
-                setPageUpdate(false);
-              }, 2000);
-            });
-        }}
-        onRemove={(file) => {
-          dispatch(deleteMethod(file.id)).then((res) => {
-            displayMessage(res);
-            setOpenModal(false);
-            setTimeout(() => {
-              setPageUpdate(false);
-            }, 2000);
+          const res = await uploadMethod({
+            id: itemId,
+            image: formData,
           });
+
+          console.log(res);
+
+          setOpenModal(false);
+        }}
+        onRemove={async (file) => {
+          await deleteMethod(file.id);
+          setOpenModal(false);
         }}
       >
         {fileList.length === 0 ? uploadButton : null}

@@ -3,21 +3,18 @@ import { useEffect, useState } from "react";
 import Panel from "../../components/adminPanel";
 import ImageUpload from "../../components/imageUpload";
 
-import { useSelector, useDispatch } from "react-redux";
-
 import {
-  getAllCats,
-  createCat,
-  deleteCat,
-  updateCatImage,
-  addCategoryOptions,
-  editCategoryOptions,
-  deleteCategoryOptions,
-  deleteCatImage,
-  getOneCat,
-} from "../../store/adminCategories";
+  useGetCategoriesAdminQuery,
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
+  useAddCategoryOptionsMutation,
+  useEditCategoryOptionsMutation,
+  useDeleteCategoryOptionMutation,
+  useUploadCategoryImageMutation,
+  useDeleteCategoryImageMutation,
+} from "../../store/services/categoriesApi";
 
-import { Button, Input, Modal, Form, message, Popconfirm, Select } from "antd";
+import { Button, Input, Modal, Form, message, Popconfirm } from "antd";
 
 import { LuSearch } from "react-icons/lu";
 import { LuArrowDownUp } from "react-icons/lu";
@@ -31,10 +28,16 @@ import "../../antd.css";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminCategories() {
-  const categories = useSelector((state) => state.adminCategories.categories);
-  const categoriesCount = useSelector(
-    (state) => state.adminCategories.categoriesCount
-  );
+  const [createCategory] = useCreateCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const [addCategoryOption] = useAddCategoryOptionsMutation();
+  const [editCategoryOption] = useEditCategoryOptionsMutation();
+  const [deleteCategoryOption] = useDeleteCategoryOptionMutation();
+  const [uploadCatImage] = useUploadCategoryImageMutation();
+  const [deleteCatImage] = useDeleteCategoryImageMutation();
+  const { data: categoriesAdmin, isLoading } = useGetCategoriesAdminQuery();
+  const [categories, setCategories] = useState([]);
+  const [categoriesCount, setCategoriesCount] = useState(0);
   const [isAddCatModalOpen, setIsAddCatModalOpen] = useState(false);
   const [isEditCatModalOpen, setIsEditCatModalOpen] = useState(false);
   const [isAddImageModalOpen, setIsAddImageModalOpen] = useState(false);
@@ -43,27 +46,23 @@ export default function AdminCategories() {
   });
   const [currentCategory, setCurrentCategory] = useState({});
   const [activeCatId, setActiveCatId] = useState("");
-  const [pageUpdate, setPageUpdate] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
-  const dispatch = useDispatch();
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(getAllCats());
-  }, [pageUpdate]);
+    if (categoriesAdmin) {
+      setCategories(categoriesAdmin.categories);
+      setCategoriesCount(categoriesAdmin.totalCount);
+    }
+  }, [categoriesAdmin, deleteCatImage]);
 
   const displayMessage = (res) => {
-    if (res.error && res.error.message === "Rejected") {
-      messageApi.open({
-        type: "error",
-        content: "Error",
-      });
-      return;
+    if (res.data) {
+      messageApi.success("Success!");
+    } else if (res.error) {
+      messageApi.error("Error!");
     }
-    messageApi.open({
-      type: "success",
-      content: "Success!",
-    });
   };
 
   const columns = [
@@ -131,6 +130,7 @@ export default function AdminCategories() {
               onClick={() => {
                 setIsAddImageModalOpen(true);
                 setActiveCatId(val.id);
+                setCurrentCategory(val);
               }}
               className="text-lg text-amber cursor-pointer hover:opacity-85 duration-100"
             >
@@ -150,15 +150,9 @@ export default function AdminCategories() {
               title="Delete the task"
               description="Are you sure to delete this task?"
               icon={<FaQuestion style={{ color: "red" }} />}
-              onConfirm={() => {
-                dispatch(deleteCat(val.id)).then((res) => {
-                  displayMessage(res);
-                  setPageUpdate(true);
-                });
-
-                setTimeout(() => {
-                  setPageUpdate(false);
-                }, 2000);
+              onConfirm={async () => {
+                const res = await deleteCategory(val.id).unwrap();
+                displayMessage(res);
               }}
             >
               <div className="text-lg text-deleteRed cursor-pointer hover:opacity-85 duration-100">
@@ -198,74 +192,46 @@ export default function AdminCategories() {
           optionEnId: en.id,
           optionRuId: ru.id,
           optionTrId: tr.id,
+          medias: cat.medias ? cat.medias : [],
         };
       })
     : [];
 
-  const handleAddCategory = () => {
-    dispatch(createCat(newCategory)).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsAddCatModalOpen(false);
-      setNewCategory({});
-    });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
+  const handleAddCategory = async () => {
+    const res = await createCategory(newCategory);
+    displayMessage(res);
+    form.resetFields();
+    setIsAddCatModalOpen(false);
   };
 
-  const handleAddCategoryOptions = (option) => {
-    dispatch(
-      addCategoryOptions({
-        id: currentCategory.id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditCatModalOpen(false);
+  const handleAddCategoryOptions = async (option) => {
+    const res = await addCategoryOption({
+      id: currentCategory.id,
+      obj: option,
     });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
+    displayMessage(res);
+    setIsEditCatModalOpen(false);
   };
 
-  const handleEditCategoryOptions = (option, id) => {
-    dispatch(
-      editCategoryOptions({
-        id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditCatModalOpen(false);
+  const handleEditCategoryOptions = async (option, id) => {
+    const res = await editCategoryOption({
+      id,
+      obj: option,
     });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
+    displayMessage(res);
+    setIsEditCatModalOpen(false);
   };
 
-  const handleDeletecategoryOptions = (id) => {
-    dispatch(deleteCategoryOptions(id)).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditCatModalOpen(false);
-    });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
+  const handleDeletecategoryOptions = async (id) => {
+    const res = await deleteCategoryOption(id).unwrap();
+    displayMessage(res);
+    setIsEditCatModalOpen(false);
   };
 
   return (
     <div className="w-[95%] mx-auto mt-4" id="cats">
       {contextHolder}
-      <Panel columns={columns} rows={rows}>
+      <Panel isLoading={isLoading} columns={columns} rows={rows}>
         <div className="px-4 py-6 flex justify-between items-center">
           <div className="font-main text-blackMain text-md">
             Categories ({categoriesCount})
@@ -302,6 +268,7 @@ export default function AdminCategories() {
           }}
           labelWrap={false}
           onFinish={handleAddCategory}
+          form={form}
         >
           <Form.Item
             name="title"
@@ -539,11 +506,9 @@ export default function AdminCategories() {
         openModal={isAddImageModalOpen}
         setOpenModal={setIsAddImageModalOpen}
         itemId={activeCatId}
-        uploadMethod={updateCatImage}
-        getMethod={getOneCat}
+        uploadMethod={uploadCatImage}
         deleteMethod={deleteCatImage}
-        pageUpdate={pageUpdate}
-        setPageUpdate={setPageUpdate}
+        currentItem={currentCategory}
       />
     </div>
   );
