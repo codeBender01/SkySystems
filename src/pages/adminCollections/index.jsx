@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import {
-  getAllCollections,
-  createCollection,
-  addCollectionOption,
-  editCollectionOption,
-  deleteCollectionOption,
-  deleteCollection,
-  updateColImage,
-  deleteColImage,
-  getOneCollection,
-} from "../../store/adminCollection";
+  useGetAllCollectionsAdminQuery,
+  useCreateCollectionMutation,
+  useDeleteCollectionMutation,
+  useAddCollectionOptionMutation,
+  useEditCollectionOptionMutation,
+  useDeleteCollectionOptionMutation,
+  useUploadCollectionImageMutation,
+  useDeleteCollectionImageMutation,
+} from "../../store/services/collectionsApi";
 
 import Panel from "../../components/adminPanel";
 import ImageUpload from "../../components/imageUpload";
@@ -28,6 +27,15 @@ import { IoAddSharp } from "react-icons/io5";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminCollections() {
+  const [createCollection] = useCreateCollectionMutation();
+  const [deleteCollection] = useDeleteCollectionMutation();
+  const [addCollectionOption] = useAddCollectionOptionMutation();
+  const [editCollectionOption] = useEditCollectionOptionMutation();
+  const [deleteCollectionOption] = useDeleteCollectionOptionMutation();
+  const { data: collectionsAdmin, isLoading } =
+    useGetAllCollectionsAdminQuery();
+  const [collections, setCollections] = useState([]);
+  const [collectionsCount, setCollectionsCount] = useState();
   const [isAddColModalOpen, setIsAddColModalOpen] = useState(false);
   const [isEditColModalOpen, setIsEditColModalOpen] = useState(false);
   const [pageUpdate, setPageUpdate] = useState(false);
@@ -37,37 +45,26 @@ export default function AdminCollections() {
     title: "",
   });
   const [currentCollection, setCurrentCollection] = useState({});
-
-  const collections = useSelector((state) => state.adminCollection.collections);
-  const collectionsCount = useSelector(
-    (state) => state.adminCollection.collectionsCount
-  );
-
   const [messageApi, contextHolder] = message.useMessage();
+
+  const [form] = Form.useForm();
 
   const dispatch = useDispatch();
 
   const displayMessage = (res) => {
-    if (res.error && res.error.message === "Rejected") {
-      messageApi.open({
-        type: "error",
-        content: "Error",
-      });
-      return;
+    if (res.data) {
+      messageApi.success("Success!");
+    } else if (res.error) {
+      messageApi.error("Error!");
     }
-    messageApi.open({
-      type: "success",
-      content: "Success!",
-    });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
   };
 
   useEffect(() => {
-    dispatch(getAllCollections());
-  }, [pageUpdate, isAddImageModalOpen]);
+    if (collectionsAdmin) {
+      setCollections(collectionsAdmin.collections);
+      setCollectionsCount(collectionsAdmin.totalCount);
+    }
+  }, [collectionsAdmin]);
 
   const columns = [
     {
@@ -151,15 +148,9 @@ export default function AdminCollections() {
               title="Delete the task"
               description="Are you sure to delete this task?"
               icon={<FaQuestion style={{ color: "red" }} />}
-              onConfirm={() => {
-                dispatch(deleteCollection(val.id)).then((res) => {
-                  displayMessage(res);
-                  setPageUpdate(true);
-                });
-
-                setTimeout(() => {
-                  setPageUpdate(false);
-                }, 2000);
+              onConfirm={async () => {
+                const res = await deleteCollection(val.id);
+                displayMessage(res);
               }}
             >
               <div className="text-lg text-deleteRed cursor-pointer hover:opacity-85 duration-100">
@@ -203,53 +194,40 @@ export default function AdminCollections() {
       })
     : [];
 
-  const handleAddCollection = () => {
-    dispatch(createCollection(newCollection)).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsAddColModalOpen(false);
-      setNewCollection({});
-    });
+  const handleAddCollection = async () => {
+    const res = await createCollection(newCollection);
+    setIsAddColModalOpen(false);
+    displayMessage(res);
   };
 
-  const handleAddCollectionOptions = (option) => {
-    dispatch(
-      addCollectionOption({
-        id: currentCollection.id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditColModalOpen(false);
+  const handleAddCollectionOptions = async (option) => {
+    const res = await addCollectionOption({
+      id: currentCollection.id,
+      obj: option,
     });
+    displayMessage(res);
+    setIsEditColModalOpen(false);
   };
 
-  const handleEditCollectionOption = (option, id) => {
-    dispatch(
-      editCollectionOption({
-        id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditColModalOpen(false);
+  const handleEditCollectionOption = async (option, id) => {
+    const res = await editCollectionOption({
+      id,
+      obj: option,
     });
+    displayMessage(res);
+    setIsEditColModalOpen(false);
   };
 
-  const handleDeleteCollectionOption = (id) => {
-    dispatch(deleteCollectionOption(id)).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditColModalOpen(false);
-    });
+  const handleDeleteCollectionOption = async (id) => {
+    const res = await deleteCollectionOption(id);
+    displayMessage(res);
+    setIsEditColModalOpen(false);
   };
 
   return (
     <div className="w-[95%] mx-auto mt-4">
       {contextHolder}
-      <Panel columns={columns} rows={rows}>
+      <Panel isLoading={isLoading} columns={columns} rows={rows}>
         <div className="px-4 py-6 flex justify-between items-center">
           <div className="font-main text-blackMain text-md">
             Collections ({collectionsCount})
@@ -286,6 +264,7 @@ export default function AdminCollections() {
           }}
           labelWrap={false}
           onFinish={handleAddCollection}
+          form={form}
         >
           <Form.Item
             name="title"
@@ -519,7 +498,7 @@ export default function AdminCollections() {
         </Form>
       </Modal>
 
-      <ImageUpload
+      {/* <ImageUpload
         openModal={isAddImageModalOpen}
         setOpenModal={setIsAddImageModalOpen}
         itemId={activeColId}
@@ -527,8 +506,9 @@ export default function AdminCollections() {
         getMethod={getOneCollection}
         deleteMethod={deleteColImage}
         pageUpdate={pageUpdate}
+
         setPageUpdate={setPageUpdate}
-      />
+      /> */}
     </div>
   );
 }

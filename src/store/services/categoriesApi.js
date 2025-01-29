@@ -1,10 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import Cookies from "universal-cookie";
-import baseURL from "./baseurl";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./refresh";
-
-const cookies = new Cookies();
-const TOKEN = cookies.get("adminAccessToken");
 
 export const categoriesApi = createApi({
   reducerPath: "categoriesApi",

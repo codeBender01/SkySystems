@@ -16,6 +16,7 @@ import basket from "./basket";
 import authSlice from "./auth/index.jsx";
 
 import { categoriesApi } from "./services/categoriesApi";
+import { collectionsApi } from "./services/collectionsApi.js";
 import { authApi } from "./services/auth";
 
 export const store = configureStore({
@@ -34,8 +35,13 @@ export const store = configureStore({
     basket,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [collectionsApi.reducerPath]: collectionsApi.reducer,
     authSlice,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(categoriesApi.middleware, authApi.middleware),
+    getDefaultMiddleware().concat(
+      categoriesApi.middleware,
+      authApi.middleware,
+      collectionsApi.middleware
+    ),
 });

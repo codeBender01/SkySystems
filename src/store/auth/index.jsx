@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
-import { Navigate } from "react-router";
 
 const cookies = new Cookies();
 

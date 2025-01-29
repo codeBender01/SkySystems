@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setAccessToken, logout } from "../auth";
-import baseURL from "./baseurl";
+import baseURL from "./baseurl.js";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
@@ -18,13 +18,14 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
+  credentials: "include",
 });
 
 export const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   // If the request returns 401 Unauthorized, try to refresh the token
-  if (result.error && result.error.status === 401) {
+  if (result.error || result.error.status === 401) {
     console.log("Access token expired. Attempting to refresh the token...");
 
     const refreshToken = cookies.get("adminRefreshToken");
