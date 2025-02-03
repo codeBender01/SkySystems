@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setAccessToken, logout } from "../auth";
-import baseURL from "./baseurl.js";
+import baseURL from "./baseUrl.js";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();

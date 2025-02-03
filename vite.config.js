@@ -11,13 +11,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://38.180.251.193",
+        target: "https://skyjacob.com/server",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/server/api"),
       },
     },
   },
   define: {
-    "process.env": process.env,
+    "import.meta.env.VITE_BASE_URL": JSON.stringify(process.env.VITE_BASE_URL),
   },
 });
