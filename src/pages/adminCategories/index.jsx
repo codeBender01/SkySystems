@@ -301,7 +301,7 @@ export default function AdminCategories() {
         </Form>
       </Modal>
       <Modal
-        title="Edit Category"
+        titlvve="Edit Category"
         open={isEditCatModalOpen}
         footer={null}
         onCancel={() => {

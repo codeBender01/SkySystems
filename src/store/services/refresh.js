@@ -18,14 +18,13 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
-  credentials: "include",
 });
 
 export const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   // If the request returns 401 Unauthorized, try to refresh the token
-  if (result.error || result.error.status === 401) {
+  if (result.error) {
     console.log("Access token expired. Attempting to refresh the token...");
 
     const refreshToken = cookies.get("adminRefreshToken");

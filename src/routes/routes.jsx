@@ -102,7 +102,7 @@ export default function Router() {
     {
       element: (
         <Suspense fallback={<Loading />}>
-          <ProtectedRoute Component={AdminLayout} />
+          <AdminLayout />
         </Suspense>
       ),
       path: "/admin",
