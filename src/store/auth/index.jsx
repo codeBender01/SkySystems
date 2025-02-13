@@ -25,7 +25,6 @@ const authSlice = createSlice({
       state.refreshToken = null;
       cookies.set("adminAccessToken");
       cookies.set("adminRefreshToken");
-      window.location.replace("/admin/login");
     },
   },
 });

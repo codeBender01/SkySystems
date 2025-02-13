@@ -86,7 +86,7 @@ const ProductHeader = () => {
                 </Link>
               </li>
               <li>
-                <HashLink smooth to={"/#contact"} onClick={handleLinkClick}>
+                <HashLink smooth to={"/"} onClick={handleLinkClick}>
                   Contact Us
                 </HashLink>
               </li>

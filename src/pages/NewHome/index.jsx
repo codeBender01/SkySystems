@@ -25,8 +25,6 @@ export default function NewHome() {
 
   const { data: cats } = useGetAllClientCategoriesQuery();
 
-  console.log(cats);
-
   return (
     <div>
       <div className="px-[20px] md:px-[120px] mt-4">
@@ -34,7 +32,12 @@ export default function NewHome() {
           {cats
             ? cats.categories.map((c) => {
                 return (
-                  <SwiperSlide>
+                  <SwiperSlide
+                    onClick={() => {
+                      navigate("/items/categories");
+                    }}
+                    key={c.id}
+                  >
                     <div className="w-[100%] h-[690px] md:h-[580px]">
                       <img
                         src={c.medias[0] ? c.medias[0].filePath : product}

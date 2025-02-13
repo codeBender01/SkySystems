@@ -3,14 +3,6 @@ import { useDispatch } from "react-redux";
 import { useLocation } from "react-router";
 
 import {
-  addProductSize,
-  editProductSize,
-  deleteProductSize,
-  addProductSizeImage,
-  deleteProductSizeImage,
-} from "../../store/adminProducts";
-
-import {
   useAddProductSizeMutation,
   useGetOneProductSizeQuery,
   useDeleteProductSizeMutation,
