@@ -4,7 +4,6 @@ import userAuth from "./userAuth";
 import adminOrders from "./adminOrders";
 import clients from "./clients";
 import admins from "./admins";
-import clientProducts from "./clientProducts";
 import basket from "./basket";
 
 import authSlice from "./auth/index.jsx";
@@ -18,6 +17,7 @@ import { sizesApi } from "./services/sizesApi.js";
 import { ordersApi } from "./services/ordersApi.js";
 import { clientCategories } from "./services/clientCats.js";
 import { clientCols } from "./services/clientCols.js";
+import { clientProducts } from "./services/clientProducts.js";
 
 export const store = configureStore({
   reducer: {
@@ -25,7 +25,6 @@ export const store = configureStore({
     adminOrders,
     clients,
     admins,
-    clientProducts,
     basket,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
@@ -36,6 +35,7 @@ export const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [clientCategories.reducerPath]: clientCategories.reducer,
     [clientCols.reducerPath]: clientCols.reducer,
+    [clientProducts.reducerPath]: clientProducts.reducer,
     authSlice,
   },
   middleware: (getDefaultMiddleware) =>

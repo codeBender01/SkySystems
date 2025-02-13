@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 
 import { addToBasket } from "../../store/basket";
 
+import { useGetOneClientProductQuery } from "../../store/services/clientProducts";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { message } from "antd";
@@ -18,6 +20,10 @@ import "swiper/css";
 
 const ProductPage = () => {
   const { categoryTitle, productId } = useParams();
+
+  const { data: oneProduct } = useGetOneClientProductQuery(productId);
+
+  console.log(oneProduct);
   const location = useLocation();
   const product = location.state;
   const dispatch = useDispatch();
@@ -32,7 +38,13 @@ const ProductPage = () => {
     setClientInfo(JSON.parse(localStorage.getItem("clientInfo")));
   }, []);
 
-  console.log(product.product.options[0].title);
+  useEffect(() => {
+    if (oneProduct) {
+      setSelectedImage(
+        oneProduct.product.colors[0].sizes[0].medias[0].filePath
+      );
+    }
+  }, [oneProduct]);
 
   const colors = [
     { id: "23479", name: "Color 1", image: color },
@@ -91,10 +103,10 @@ const ProductPage = () => {
             />
           </div>
           <div className="details flex flex-col gap-4 mb-2">
-            <span>{product.product.options[0]?.title}</span>
+            <span>{oneProduct?.product?.options[0]?.title}</span>
             <h1>
-              {product.product.options[0]?.title} -{" "}
-              {product.product.colors[0]?.sizes[0]?.price}TL
+              {oneProduct?.product?.options[0]?.title} -{" "}
+              {oneProduct?.product?.colors[0]?.sizes[0]?.price}TL
             </h1>
 
             <div className="quantity">
@@ -129,7 +141,9 @@ const ProductPage = () => {
             </div>
             <p>Minimal quantity - 10</p>
 
-            <p>In stock - {product.product.colors[0]?.sizes[0]?.quantity}</p>
+            <p>
+              In stock - {oneProduct?.product?.colors[0]?.sizes[0]?.quantity}
+            </p>
             <p className="mb-6">Minimal order sum - 400$</p>
             <div className="cardItems mt-10">
               <div className="variables">
@@ -154,16 +168,22 @@ const ProductPage = () => {
                     },
                   }}
                 >
-                  {colors.map((color) => (
-                    <SwiperSlide key={color.id}>
-                      <img
-                        src={color.image}
-                        alt={color.name}
-                        className={selectedColor === color.id ? "selected" : ""}
-                        onClick={() => handleColorClick(color)}
-                      />
-                    </SwiperSlide>
-                  ))}
+                  {oneProduct && oneProduct.colors
+                    ? oneProduct.product.colors[0].sizes[0].medias.map(
+                        (color) => (
+                          <SwiperSlide key={color.id}>
+                            <img
+                              src={color.filePath}
+                              alt={color.name}
+                              className={
+                                selectedColor === color.id ? "selected" : ""
+                              }
+                              onClick={() => handleColorClick(color)}
+                            />
+                          </SwiperSlide>
+                        )
+                      )
+                    : null}
                 </Swiper>
                 <div className="swiper-button-prev"></div>
                 <div className="swiper-button-next"></div>
@@ -196,6 +216,7 @@ const ProductPage = () => {
           </div>
         </div>
       </main>
+      <div>jjj</div>
     </div>
   );
 };

@@ -1,21 +1,11 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-
-import { getCLientProducts } from "../../store/clientProducts";
+import { Link } from "react-router-dom";
 
 import styles from "./allProducts.module.scss";
 
 import productimg from "../../assets/2.png";
 
 function AllProducts() {
-  const dispatch = useDispatch();
-
-  const products = useSelector((state) => state.clientProducts.clientProducts);
-
-  useEffect(() => {
-    dispatch(getCLientProducts());
-  }, []);
+  const products = [];
 
   return (
     <>

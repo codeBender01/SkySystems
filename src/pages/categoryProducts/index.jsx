@@ -10,8 +10,6 @@ function CategoryProducts() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  console.log(state);
-
   return (
     <>
       <div className={styles.App}>
@@ -35,8 +33,9 @@ function CategoryProducts() {
               <div className={styles.frame}>
                 <img
                   src={
-                    product.sizes && product.sizes.medias[0]
-                      ? product.sizes.medias[0].filePath
+                    product.colors[0].sizes &&
+                    product.colors[0].sizes[0].medias[0]
+                      ? product.colors[0].sizes[0].medias[0].filePath
                       : categoryImg
                   }
                   alt={product.name}

@@ -4,13 +4,10 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-const TOKEN = cookies.get("adminAccessToken");
-
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: baseURL,
-    headers: { Authorization: `Bearer ${TOKEN}` },
   }),
   endpoints: (builder) => ({
     adminLogin: builder.mutation({
@@ -20,7 +17,33 @@ export const authApi = createApi({
         body: creds,
       }),
     }),
+    userLogin: builder.mutation({
+      query: (creds) => ({
+        url: "/client/auth/login",
+        method: "POST",
+        body: creds,
+      }),
+    }),
+    userRegister: builder.mutation({
+      query: (creds) => ({
+        url: "/client/auth/registration",
+        method: "POST",
+        body: creds,
+      }),
+    }),
+    verifyUser: builder.mutation({
+      query: (creds) => ({
+        url: `/client/auth/${creds.id}/verify`,
+        method: "POST",
+        body: creds.code,
+      }),
+    }),
   }),
 });
 
-export const { useAdminLoginMutation, useRefreshTokenQuery } = authApi;
+export const {
+  useAdminLoginMutation,
+  useUserLoginMutation,
+  useUserRegisterMutation,
+  useVerifyUserMutation,
+} = authApi;

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
-import { useRefreshTokenQuery } from "../../store/services/auth";
 
 import Cookies from "universal-cookie";
 

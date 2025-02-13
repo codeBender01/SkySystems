@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
+import {
+  useUserRegisterMutation,
+  useVerifyUserMutation,
+} from "../../store/services/auth";
+
 import Cookies from "universal-cookie";
 
 import { registerUser, verifyUser } from "../../store/userAuth";
@@ -15,6 +20,9 @@ const cookies = new Cookies();
 const UserForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [register] = useUserRegisterMutation();
+  const [verify] = useVerifyUserMutation();
 
   const [isVerify, setIsVerify] = useState();
   const [clientId, setClientId] = useState("");
@@ -30,30 +38,36 @@ const UserForm = () => {
     apartmentNumber: "",
   });
 
-  const handleRegistration = () => {
+  const handleRegistration = async () => {
     for (let r in registerData) {
       if (registerData[r] === "") {
         return;
       }
       setIsVerify(true);
-      dispatch(registerUser(registerData)).then((res) => {
-        setClientId(res.payload.client.id);
-      });
+      const res = await register(registerData);
+      console.log(res);
     }
   };
 
-  const handleVerification = () => {
-    dispatch(
-      verifyUser({
-        id: clientId,
-        code: verificationCode,
-      }).then((res) => {
-        cookies.set("userAccessToken", res.payload.accessToken);
-        cookies.set("userRefreshToken", res.payload.refreshToken);
-        localStorage.setItem("clientInfo", JSON.stringify(res.payload.client));
-        navigate("/");
-      })
-    );
+  const handleVerification = async () => {
+    // dispatch(
+    //   verifyUser({
+    //     id: clientId,
+    //     code: verificationCode,
+    //   }).then((res) => {
+    //     cookies.set("userAccessToken", res.payload.accessToken);
+    //     cookies.set("userRefreshToken", res.payload.refreshToken);
+    //     localStorage.setItem("clientInfo", JSON.stringify(res.payload.client));
+    //     navigate("/");
+    //   })
+    // );
+
+    const res = await verifyUser({
+      id: clientId,
+      code: verificationCode,
+    });
+
+    console.log(res);
   };
 
   return (
