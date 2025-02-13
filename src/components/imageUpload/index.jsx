@@ -34,7 +34,6 @@ export default function ImageUpload({
   };
 
   useEffect(() => {
-    console.log(currentItem);
     if (currentItem.medias) {
       const fList = currentItem.medias.map((img) => {
         return {
@@ -93,7 +92,7 @@ export default function ImageUpload({
           setOpenModal(false);
         }}
       >
-        {fileList.length === 0 ? uploadButton : null}
+        {fileList.length < 3 ? uploadButton : null}
       </Upload>
     </Modal>
   );

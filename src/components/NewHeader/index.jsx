@@ -9,6 +9,9 @@ import { GiShoppingBag } from "react-icons/gi";
 import { TfiClose } from "react-icons/tfi";
 import { AiOutlineMenu } from "react-icons/ai";
 
+import { useGetAllClientCategoriesQuery } from "../../store/services/clientCats";
+import { useGetAllClientCollectionsQuery } from "../../store/services/clientCols";
+
 import { Modal, Divider, Input } from "antd";
 import HeaderMenu from "../HeaderMenu";
 
@@ -39,12 +42,6 @@ const arr = [
     name: "Home",
   },
   {
-    name: "Link",
-  },
-  {
-    name: "Link",
-  },
-  {
     name: "Collections",
     isDrop: true,
   },
@@ -61,9 +58,16 @@ const arr = [
 export default function NewHeader() {
   const navigate = useNavigate();
 
+  const { data: cats } = useGetAllClientCategoriesQuery();
+  const { data: cols } = useGetAllClientCollectionsQuery();
+
   const [openWishList, setOpenWishList] = useState(false);
   const [openSearchBar, setOpenSearchBar] = useState(false);
   const [openHeaderMenu, setOpenHeaderMenu] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState({
+    name: "eur",
+    icon: <FaEuroSign />,
+  });
 
   return (
     <header className="pt-[7px] px-4 w-[100%] relative">
@@ -81,8 +85,8 @@ export default function NewHeader() {
         </div>
         <div className="z-50 relative border-[1px] border-headerGray hidden md:flex items-center text-headerGrayTwo font-cat p-[11px] gap-[10px] cursor-pointer rounded-[2px] group-hover:text-blackMain group/edit duration-150">
           <div className="flex items-center uppercase text-sm font-bold">
-            eur
-            <FaEuroSign />
+            {selectedCurrency.name}
+            {selectedCurrency.icon}
           </div>
           <div className="group-hover/edit:rotate-180 duration-300">
             <SlArrowDown size={14} />
@@ -93,6 +97,9 @@ export default function NewHeader() {
                 <li
                   key={c.name}
                   className="flex uppercase text-headerGrayTwo gap-2 items-center font-cat font-bold hover:text-blackMain duration-150"
+                  onClick={() => {
+                    setSelectedCurrency(c);
+                  }}
                 >
                   {c.name}
                   {c.icon}
@@ -145,11 +152,24 @@ export default function NewHeader() {
                     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
                   }}
                 >
-                  <li className="hover:text-blackMain duration-100">Link</li>
-                  <li className="hover:text-blackMain duration-100">Link</li>
-                  <li className="hover:text-blackMain duration-100">Link</li>
-                  <li className="hover:text-blackMain duration-100">Link</li>
-                  <li className="hover:text-blackMain duration-100">Link</li>
+                  {l.name === "Categories" && cats
+                    ? cats.categories.map((c) => {
+                        return (
+                          <li className="hover:text-blackMain duration-100">
+                            {c.options[0].title}
+                          </li>
+                        );
+                      })
+                    : null}
+                  {l.name === "Collections" && cols
+                    ? cols.collections.map((c) => {
+                        return (
+                          <li className="hover:text-blackMain duration-100">
+                            {c.options[0].title}
+                          </li>
+                        );
+                      })
+                    : null}
                 </ul>
               ) : null}
             </li>

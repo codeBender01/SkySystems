@@ -1,6 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import categoryReducer from "./category/categorySlice";
-import categoryProductsReducer from "./category/categoryProductsSlice";
 
 import userAuth from "./userAuth";
 import adminOrders from "./adminOrders";
@@ -18,11 +16,11 @@ import { authApi } from "./services/auth";
 import { colorsApi } from "./services/colorsApi.js";
 import { sizesApi } from "./services/sizesApi.js";
 import { ordersApi } from "./services/ordersApi.js";
+import { clientCategories } from "./services/clientCats.js";
+import { clientCols } from "./services/clientCols.js";
 
 export const store = configureStore({
   reducer: {
-    categories: categoryReducer,
-    categoryproducts: categoryProductsReducer,
     userAuth,
     adminOrders,
     clients,
@@ -36,6 +34,8 @@ export const store = configureStore({
     [colorsApi.reducerPath]: colorsApi.reducer,
     [sizesApi.reducerPath]: sizesApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
+    [clientCategories.reducerPath]: clientCategories.reducer,
+    [clientCols.reducerPath]: clientCols.reducer,
     authSlice,
   },
   middleware: (getDefaultMiddleware) =>
@@ -46,6 +46,8 @@ export const store = configureStore({
       productsApi.middleware,
       colorsApi.middleware,
       sizesApi.middleware,
-      ordersApi.middleware
+      ordersApi.middleware,
+      clientCategories.middleware,
+      clientCols.middleware
     ),
 });

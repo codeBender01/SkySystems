@@ -7,7 +7,7 @@ import { FiHeart } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
-import { useGetCategoriesQuery } from "../../store/services/categoriesApi";
+import { useGetAllClientCategoriesQuery } from "../../store/services/clientCats";
 
 import product from "../../assets/productBig.png";
 import product2 from "../../assets/Rectangle2.png";
@@ -21,46 +21,31 @@ export default function NewHome() {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredImgId, setHoveredImgId] = useState(null);
 
+  const navigate = useNavigate();
+
+  const { data: cats } = useGetAllClientCategoriesQuery();
+
+  console.log(cats);
+
   return (
     <div>
       <div className="px-[20px] md:px-[120px] mt-4">
         <Swiper loop onSwiper={(swiper) => setSwiperInst(swiper)}>
-          <SwiperSlide>
-            <div className="w-[100%] h-[690px] md:h-[580px]">
-              <img
-                src={product}
-                className="w-[100%] h-[100%] object-cover"
-                alt=""
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="w-[100%] h-[690px] md:h-[580px]">
-              <img
-                src={product}
-                className="w-[100%] h-[100%] object-cover"
-                alt=""
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="w-[100%] h-[690px] md:h-[580px]">
-              <img
-                src={product}
-                className="w-[100%] h-[100%] object-cover"
-                alt=""
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="w-[100%] h-[690px] md:h-[580px]">
-              <img
-                src={product}
-                className="w-[100%] h-[100%] object-cover"
-                alt=""
-              />
-            </div>
-          </SwiperSlide>
+          {cats
+            ? cats.categories.map((c) => {
+                return (
+                  <SwiperSlide>
+                    <div className="w-[100%] h-[690px] md:h-[580px]">
+                      <img
+                        src={c.medias[0] ? c.medias[0].filePath : product}
+                        className="w-[100%] h-[100%] object-cover"
+                        alt=""
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
+              })
+            : null}
         </Swiper>
         <div className="flex items-center justify-between mt-[-60px] z-50 relative px-4">
           <div
@@ -79,52 +64,55 @@ export default function NewHome() {
       </div>
 
       <div className="px-[20px] md:px-[120px] flex flex-col items-center mt-[30px]">
-        <div className="text-lg text-[#606060] font-cat">Category name</div>
+        <div className="text-lg text-[#606060] font-cat">Categories</div>
         <div className="flex justify-between items-center w-[100%] flex-wrap gap-2">
-          {[1, 2, 3, 4].map((n) => {
-            return (
-              <div
-                key={n}
-                className="w-[48%] md:w-[22%] flex flex-col items-center"
-              >
-                <div
-                  className="w-[100%] h-[280px] relative"
-                  onMouseEnter={() => {
-                    setHoveredImgId(n);
-                    setIsHovered(true);
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredImgId(null);
-                    setIsHovered(false);
-                  }}
-                >
-                  <img
-                    src={product2}
-                    alt=""
-                    className={`image ${
-                      isHovered && hoveredImgId === n ? "fade-out" : "fade-in"
-                    }`}
-                  />
-                  <img
-                    src={product3}
-                    alt=""
-                    className={`image ${
-                      isHovered && hoveredImgId === n ? "fade-in" : "fade-out"
-                    }`}
-                  />
-                  <div className="absolute top-2 right-2">
-                    <FiHeart />
+          {cats
+            ? cats.categories.map((n) => {
+                return (
+                  <div
+                    key={n}
+                    className="w-[48%] md:w-[22%] flex flex-col items-center"
+                  >
+                    <div
+                      className="w-[100%] h-[280px] relative"
+                      onMouseEnter={() => {
+                        setHoveredImgId(n);
+                        setIsHovered(true);
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredImgId(null);
+                        setIsHovered(false);
+                      }}
+                    >
+                      <img
+                        src={n.medias[0] ? n.medias[0].filePath : product2}
+                        alt=""
+                        className={`image ${
+                          isHovered && hoveredImgId === n
+                            ? "fade-out"
+                            : "fade-in"
+                        }`}
+                      />
+                      <img
+                        src={n.medias[1] ? n.medias[1].filePath : product3}
+                        alt=""
+                        className={`image ${
+                          isHovered && hoveredImgId === n
+                            ? "fade-in"
+                            : "fade-out"
+                        }`}
+                      />
+                      <div className="absolute top-2 right-2">
+                        <FiHeart />
+                      </div>
+                    </div>
+                    <div className="text-[#606060] text-sm font-mul ">
+                      {n.options[0].title}
+                    </div>
                   </div>
-                </div>
-                <div className="text-[#606060] text-sm font-mul ">
-                  Product name
-                </div>
-                <div className="text-[#606060] text-sm font-mul ">
-                  Product price
-                </div>
-              </div>
-            );
-          })}
+                );
+              })
+            : null}
         </div>
       </div>
 
