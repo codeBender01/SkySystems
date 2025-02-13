@@ -3,13 +3,21 @@ import { useDispatch } from "react-redux";
 import { useLocation } from "react-router";
 
 import {
-  getOneProduct,
   addProductSize,
   editProductSize,
   deleteProductSize,
   addProductSizeImage,
   deleteProductSizeImage,
 } from "../../store/adminProducts";
+
+import {
+  useAddProductSizeMutation,
+  useGetOneProductSizeQuery,
+  useDeleteProductSizeMutation,
+  useEditProductSizeMutation,
+  useUploadProductSizeImageMutation,
+  useDeleteProductSizeImageMutation,
+} from "../../store/services/sizesApi";
 
 import Panel from "../../components/adminPanel";
 import ImageUpload from "../../components/imageUpload";
@@ -25,12 +33,18 @@ import { BsImageFill } from "react-icons/bs";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminSizes() {
+  const [addProductSize] = useAddProductSizeMutation();
+  const [deleteProductSize] = useDeleteProductSizeMutation();
+  const [editProductSize] = useEditProductSizeMutation();
+  const [uploadImage] = useUploadProductSizeImageMutation();
+  const [deleteProductSizeImage] = useDeleteProductSizeImageMutation();
+
   const [isAddSizeModalOpen, setIsAddSizeModalOpen] = useState(false);
   const [isEditSizeModalOpen, setIsEditSizeModalOpen] = useState(false);
   const [isAddImageModalOpen, setIsAddImageModalOpen] = useState(false);
   const [activeSizeId, setActiveSizeId] = useState("");
   const [pageUpdate, setPageUpdate] = useState(false);
-  const [color, setColor] = useState({});
+  const [sizes, setSizes] = useState([]);
   const [newSize, setNewSize] = useState({
     size: "",
     quantity: 0,
@@ -38,6 +52,7 @@ export default function AdminSizes() {
     barcode: "",
     isActive: false,
   });
+
   const [currentSize, setCurrentSize] = useState({});
   const [editedSize, setEditedSize] = useState({});
 
@@ -47,16 +62,17 @@ export default function AdminSizes() {
   const dispatch = useDispatch();
   const { state } = useLocation();
 
+  const { data: oneProduct } = useGetOneProductSizeQuery(state.id);
+
   useEffect(() => {
-    dispatch(getOneProduct(state.id)).then((res) => {
-      let colors = res.payload.product.colors;
-      for (let i = 0; i < colors.length; i++) {
-        if (colors[i].id === state.colorId) {
-          setColor(colors[i]);
-        }
-      }
-    });
-  }, [pageUpdate]);
+    if (oneProduct) {
+      const filteredColor = oneProduct.product.colors.filter(
+        (el) => el.id === state.colorId
+      );
+
+      setSizes(filteredColor[0].sizes);
+    }
+  }, [oneProduct]);
 
   const columns = [
     {
@@ -121,6 +137,7 @@ export default function AdminSizes() {
               onClick={() => {
                 setIsAddImageModalOpen(true);
                 setActiveSizeId(val.id);
+                setCurrentSize(val);
               }}
               className="text-lg text-amber cursor-pointer hover:opacity-85 duration-100"
             >
@@ -140,15 +157,9 @@ export default function AdminSizes() {
               title="Delete the task"
               description="Are you sure to delete this task?"
               icon={<FaQuestion style={{ color: "red" }} />}
-              onConfirm={() => {
-                dispatch(deleteProductSize(val.id)).then((res) => {
-                  displayMessage(res);
-                  setPageUpdate(true);
-                });
-
-                setTimeout(() => {
-                  setPageUpdate(false);
-                }, 2000);
+              onConfirm={async () => {
+                const res = await deleteProductSize(val.id);
+                displayMessage(res);
               }}
             >
               <div className="text-lg text-deleteRed cursor-pointer hover:opacity-85 duration-100">
@@ -161,18 +172,21 @@ export default function AdminSizes() {
     },
   ];
 
-  const rows = color.sizes
-    ? color.sizes.map((sz) => {
-        return {
-          key: sz.id,
-          id: sz.id,
-          size: sz.size,
-          quantity: sz.quantity,
-          price: sz.price,
-          barcode: sz.barcode,
-        };
-      })
-    : [];
+  const rows =
+    sizes && sizes.length > 0
+      ? sizes.map((sz) => {
+          return {
+            key: sz.id,
+            id: sz.id,
+            size: sz.size,
+            quantity: sz.quantity,
+            price: sz.price,
+            barcode: sz.barcode,
+            img: sz.medias.length > 0 ? sz.medias[0].filePath : null,
+            medias: sz.medias ? sz.medias : [],
+          };
+        })
+      : [];
 
   const displayMessage = (res) => {
     if (res.error && res.error.message === "Rejected") {
@@ -192,34 +206,25 @@ export default function AdminSizes() {
     }, 2000);
   };
 
-  const handleAddProductSize = () => {
-    dispatch(
-      addProductSize({
-        id: state.colorId,
-        size: newSize,
-      })
-    ).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsAddSizeModalOpen(false);
-      setNewSize({});
+  const handleAddProductSize = async () => {
+    const res = await addProductSize({
+      id: state.colorId,
+      obj: newSize,
     });
+    displayMessage(res);
+    setIsAddSizeModalOpen(false);
+    setNewSize({});
   };
 
-  const handleEditProductSize = () => {
-    dispatch(
-      editProductSize({
-        id: currentSize.id,
-        size: editedSize,
-      })
-    ).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsEditSizeModalOpen(false);
-      setNewSize({});
+  const handleEditProductSize = async () => {
+    const res = await editProductSize({
+      id: currentSize.id,
+      obj: editedSize,
     });
+
+    displayMessage(res);
+    setIsEditSizeModalOpen(false);
+    setNewSize({});
   };
 
   return (
@@ -499,12 +504,9 @@ export default function AdminSizes() {
         openModal={isAddImageModalOpen}
         setOpenModal={setIsAddImageModalOpen}
         itemId={activeSizeId}
-        uploadMethod={addProductSizeImage}
-        getMethod={getOneProduct}
+        uploadMethod={uploadImage}
         deleteMethod={deleteProductSizeImage}
-        pageUpdate={pageUpdate}
-        setPageUpdate={setPageUpdate}
-        colorId={state.colorId}
+        currentItem={currentSize}
       />
     </div>
   );

@@ -21,8 +21,6 @@ export default function NewHome() {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredImgId, setHoveredImgId] = useState(null);
 
-  const { data: categories } = useGetCategoriesQuery();
-
   return (
     <div>
       <div className="px-[20px] md:px-[120px] mt-4">

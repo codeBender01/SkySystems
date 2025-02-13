@@ -24,6 +24,7 @@ export default function AdminLogin() {
       message.error("Error: Wrong username or password");
     } else if (isSuccess) {
       message.success("Success!");
+      console.log(data);
       cookies.set("adminAccessToken", data.accessToken);
       cookies.set("adminRefreshToken", data.refreshToken);
       navigate("/admin");

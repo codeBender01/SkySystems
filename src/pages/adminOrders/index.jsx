@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 
 import { getAbandonedOrders, getClientOrders } from "../../store/adminOrders";
 
+import { useGetOrdersQuery } from "../../store/services/ordersApi";
+
 import Panel from "../../components/adminPanel";
 
 import { Button, Input } from "antd";
@@ -18,6 +20,10 @@ const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminOrders() {
   const dispatch = useDispatch();
+
+  const { data: orders } = useGetOrdersQuery();
+
+  console.log(orders);
 
   useEffect(() => {
     dispatch(getAbandonedOrders());

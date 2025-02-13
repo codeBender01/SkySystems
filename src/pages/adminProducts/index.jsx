@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
+import { useGetAllCollectionsAdminQuery } from "../../store/services/collectionsApi";
+import { useGetCategoriesAdminQuery } from "../../store/services/categoriesApi";
 import {
-  getAllProducts,
-  createProduct,
-  deleteProduct,
-  addProductOption,
-  editProductOption,
-  deleteProductOption,
-} from "../../store/adminProducts";
+  useGetAllProductsQuery,
+  useCreateProductMutation,
+  useAddProductOptionMutation,
+  useDeleteProductMutation,
+  useEditProductOptionsMutation,
+  useDeleteProductOptionMutation,
+} from "../../store/services/productsApi";
 
 import Panel from "../../components/adminPanel";
 
 import { Button, Input, Modal, Select, Form, message, Popconfirm } from "antd";
-import ImageUpload from "../../components/imageUpload";
 
 import { LuSearch } from "react-icons/lu";
 import { BsImageFill } from "react-icons/bs";
@@ -25,10 +26,18 @@ import { IoAddSharp } from "react-icons/io5";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminProducts() {
+  const [createProduct] = useCreateProductMutation();
+  const [addProductOption] = useAddProductOptionMutation();
+  const [deleteProduct] = useDeleteProductMutation();
+  const [editProductOptions] = useEditProductOptionsMutation();
+  const [deleteProductOption] = useDeleteProductOptionMutation();
+
+  const { data: categories } = useGetCategoriesAdminQuery();
+  const { data: collections } = useGetAllCollectionsAdminQuery();
+  const { data: products } = useGetAllProductsQuery();
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [collectionOptions, setCollectionOptions] = useState([]);
-  const [pageUpdate, setPageUpdate] = useState(false);
   const [newProduct, setNewProduct] = useState({
     title: "",
     categoryId: "",
@@ -39,39 +48,29 @@ export default function AdminProducts() {
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const products = useSelector((state) => state.adminProducts.products);
-  const collections = useSelector((state) => state.adminCollection.collections);
-  const categories = useSelector((state) => state.adminCategories.categories);
-  const productsCount = useSelector(
-    (state) => state.adminProducts.productsCount
-  );
+  const productsCount = products?.totalCount ? products.totalCount : 0;
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getAllProducts());
-    let catOptions = categories.map((cat) => {
-      return {
-        label: cat.options[0].title,
-        value: cat.id,
-      };
-    });
+    if (categories && collections) {
+      let catOptions = categories.categories.map((cat) => {
+        return {
+          label: cat.options[0].title,
+          value: cat.id,
+        };
+      });
 
-    let colOptions = collections.map((col) => {
-      return {
-        label: col.options[0].title,
-        value: col.id,
-      };
-    });
-
-    setCategoryOptions(catOptions);
-    setCollectionOptions(colOptions);
-  }, [categories]);
-
-  useEffect(() => {
-    dispatch(getAllProducts());
-  }, [pageUpdate]);
+      let colOptions = collections.collections.map((col) => {
+        return {
+          label: col.options[0].title,
+          value: col.id,
+        };
+      });
+      setCategoryOptions(catOptions);
+      setCollectionOptions(colOptions);
+    }
+  }, [categories, collections]);
 
   const columns = [
     {
@@ -135,15 +134,9 @@ export default function AdminProducts() {
               title="Delete the task"
               description="Are you sure to delete this task?"
               icon={<FaQuestion style={{ color: "red" }} />}
-              onConfirm={() => {
-                dispatch(deleteProduct(val.id)).then((res) => {
-                  displayMessage(res);
-                  setPageUpdate(true);
-                });
-
-                setTimeout(() => {
-                  setPageUpdate(false);
-                }, 2000);
+              onConfirm={async () => {
+                const res = await deleteProduct(val.id).unwrap();
+                displayMessage(res);
               }}
             >
               <div className="text-lg text-deleteRed cursor-pointer hover:opacity-85 duration-100">
@@ -157,7 +150,7 @@ export default function AdminProducts() {
   ];
 
   const rows = products
-    ? products.map((pr) => {
+    ? products.products.map((pr) => {
         let en = {};
         let ru = {};
         let tr = {};
@@ -198,54 +191,36 @@ export default function AdminProducts() {
       type: "success",
       content: "Success!",
     });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
   };
 
-  const handleAddProduct = () => {
-    dispatch(createProduct(newProduct)).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsAddProductModalOpen(false);
-      setNewProduct({});
-    });
+  const handleAddProduct = async () => {
+    const res = await createProduct(newProduct);
+    displayMessage(res);
+    setIsAddProductModalOpen(false);
   };
 
-  const handleAddProductOptions = (option) => {
-    dispatch(
-      addProductOption({
-        id: currentProduct.id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditProductModalOpen(false);
+  const handleAddProductOptions = async (option) => {
+    const res = await addProductOption({
+      id: currentProduct.id,
+      obj: option,
     });
+    displayMessage(res);
+    setIsEditProductModalOpen(false);
   };
 
-  const handleEditProductOption = (option, id) => {
-    dispatch(
-      editProductOption({
-        id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditProductModalOpen(false);
+  const handleEditProductOption = async (option, id) => {
+    const res = await editProductOptions({
+      id,
+      obj: option,
     });
+    displayMessage(res);
+    setIsEditProductModalOpen(false);
   };
 
-  const handleDeleteProductOption = (id) => {
-    dispatch(deleteProductOption(id)).then((res) => {
-      displayMessage(res);
-      setPageUpdate(true);
-      setIsEditProductModalOpen(false);
-    });
+  const handleDeleteProductOption = async (id) => {
+    const res = await deleteProductOption(id).unwrap();
+    displayMessage(res);
+    setIsEditProductModalOpen(false);
   };
 
   return (

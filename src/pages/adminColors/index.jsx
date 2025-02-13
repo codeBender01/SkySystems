@@ -3,13 +3,13 @@ import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 
 import {
-  addProductColor,
-  getOneProduct,
-  addProductColorOption,
-  editProductColorOption,
-  deleteProductColorOption,
-  deleteProductColor,
-} from "../../store/adminProducts";
+  useAddProductColorMutation,
+  useGetOneProductQuery,
+  useDeleteProductColorMutation,
+  useAddProductColorOptionMutation,
+  useEditProductColorOptionMutation,
+  useDeleteProductColorOptionMutation,
+} from "../../store/services/colorsApi";
 
 import Panel from "../../components/adminPanel";
 
@@ -24,12 +24,16 @@ import { VscTextSize } from "react-icons/vsc";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminColors() {
-  const [messageApi, contextHolder] = message.useMessage();
+  const [addProductColorQuery] = useAddProductColorMutation();
+  const [deleteProductColor] = useDeleteProductColorMutation();
+  const [addProductColorOption] = useAddProductColorOptionMutation();
+  const [editProductColorOption] = useEditProductColorOptionMutation();
+  const [deleteProductColorOption] = useDeleteProductColorOptionMutation();
 
+  const [messageApi, contextHolder] = message.useMessage();
   const [isAddColorModalOpen, setIsAddColorModalOpen] = useState(false);
   const [isEditColorModalOpen, setIsEditColorModalOpen] = useState(false);
   const [pageUpdate, setPageUpdate] = useState(false);
-  const [product, setProduct] = useState({});
   const [newColor, setNewColor] = useState({
     name: "",
   });
@@ -39,11 +43,7 @@ export default function AdminColors() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(getOneProduct(state.id)).then((res) => {
-      setProduct(res.payload.product);
-    });
-  }, [pageUpdate]);
+  const { data: oneProduct } = useGetOneProductQuery(state.id);
 
   const columns = [
     {
@@ -108,15 +108,9 @@ export default function AdminColors() {
               title="Delete the task"
               description="Are you sure to delete this task?"
               icon={<FaQuestion style={{ color: "red" }} />}
-              onConfirm={() => {
-                dispatch(deleteProductColor(val.id)).then((res) => {
-                  displayMessage(res);
-                  setPageUpdate(true);
-                });
-
-                setTimeout(() => {
-                  setPageUpdate(false);
-                }, 2000);
+              onConfirm={async () => {
+                const res = await deleteProductColor(val.id).unwrap();
+                displayMessage(res);
               }}
             >
               <div className="text-lg text-deleteRed cursor-pointer hover:opacity-85 duration-100">
@@ -130,8 +124,8 @@ export default function AdminColors() {
   ];
 
   const rows =
-    product && product.colors
-      ? product.colors.map((pr) => {
+    oneProduct && oneProduct.product.colors
+      ? oneProduct.product.colors.map((pr) => {
           let en = {};
           let ru = {};
           let tr = {};
@@ -177,59 +171,42 @@ export default function AdminColors() {
     }, 2000);
   };
 
-  const handleAddColor = () => {
-    dispatch(
-      addProductColor({
-        id: state.id,
-        color: newColor,
-      })
-    ).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsAddColorModalOpen(false);
-      setNewColor({});
+  const handleAddColor = async () => {
+    const res = await addProductColorQuery({
+      id: state.id,
+      obj: newColor,
     });
+    displayMessage(res);
+    setIsAddColorModalOpen(false);
+    setNewColor({});
   };
 
-  const handleAddColorOption = (option) => {
-    dispatch(
-      addProductColorOption({
-        id: currentColor.id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsEditColorModalOpen(false);
-      setNewColor({});
+  const handleAddColorOption = async (option) => {
+    const res = await addProductColorOption({
+      id: currentColor.id,
+      obj: option,
     });
+    displayMessage(res);
+    setIsEditColorModalOpen(false);
+    setNewColor({});
   };
 
-  const handleEditColorOption = (option, id) => {
-    dispatch(
-      editProductColorOption({
-        id,
-        option,
-      })
-    ).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsEditColorModalOpen(false);
-      setNewColor({});
+  const handleEditColorOption = async (option, id) => {
+    const res = await editProductColorOption({
+      id,
+      obj: option,
     });
+
+    displayMessage(res);
+    setIsEditColorModalOpen(false);
+    setNewColor({});
   };
 
-  const handleDeleteColorOption = (id) => {
-    dispatch(deleteProductColorOption(id)).then((res) => {
-      displayMessage(res);
-
-      setPageUpdate(true);
-      setIsEditColorModalOpen(false);
-      setNewColor({});
-    });
+  const handleDeleteColorOption = async (id) => {
+    const res = await deleteProductColorOption(id);
+    displayMessage(res);
+    setIsEditColorModalOpen(false);
+    setNewColor({});
   };
 
   return (

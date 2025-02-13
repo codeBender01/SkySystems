@@ -20,18 +20,6 @@ export const getAllProducts = createAsyncThunk(
   }
 );
 
-export const getOneProduct = createAsyncThunk(
-  "products/getOne",
-  async (data, { rejectWithValue }) => {
-    try {
-      const res = await $api.get(`/api/products/admin/${data}`);
-      return res.data;
-    } catch (e) {
-      return rejectWithValue(e.response.status);
-    }
-  }
-);
-
 export const createProduct = createAsyncThunk(
   "products/create",
   async (data, { rejectWithValue }) => {

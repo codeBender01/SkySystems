@@ -34,6 +34,7 @@ export default function ImageUpload({
   };
 
   useEffect(() => {
+    console.log(currentItem);
     if (currentItem.medias) {
       const fList = currentItem.medias.map((img) => {
         return {
@@ -79,13 +80,11 @@ export default function ImageUpload({
           const { onSuccess } = options;
           const formData = new FormData();
 
-          formData.append("file", fileList[fileList.length - 1].originFileObj);
+          formData.append("image", fileList[fileList.length - 1].originFileObj);
           const res = await uploadMethod({
             id: itemId,
             image: formData,
           });
-
-          console.log(res);
 
           setOpenModal(false);
         }}

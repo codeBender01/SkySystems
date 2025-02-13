@@ -1,27 +1,13 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams, useNavigate } from "react-router-dom";
-
-import { getClientCategories } from "../../store/clientCategories";
+import { useNavigate } from "react-router-dom";
 
 import styles from "../allProducts/allProducts.module.scss";
 
 import productimg from "../../assets/2.png";
 
 function AllCategories() {
-  const { categoryTitle } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const categories = useSelector(
-    (state) => state.clientCategories.clientCategories
-  );
-
-  useEffect(() => {
-    dispatch(getClientCategories());
-
-    console.log(categories);
-  }, []);
+  const categories = [];
 
   return (
     <>

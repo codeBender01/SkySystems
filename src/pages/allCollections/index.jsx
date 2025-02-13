@@ -1,28 +1,13 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams, useNavigate } from "react-router-dom";
-
-import { getClientCollections } from "../../store/clientCollections";
-
-import ProductHeader from "../../components/productHeader";
-import Footer from "../../components/footer";
+import { Link, useNavigate } from "react-router-dom";
 
 import styles from "../allProducts/allProducts.module.scss";
 
 import productimg from "../../assets/2.png";
 
 function AllCollections() {
-  const { categoryTitle } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const collections = useSelector(
-    (state) => state.clientCollections.clientCollections
-  );
-
-  useEffect(() => {
-    dispatch(getClientCollections());
-  }, []);
+  const collections = [];
 
   return (
     <>

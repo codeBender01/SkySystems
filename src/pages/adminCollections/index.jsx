@@ -32,6 +32,8 @@ export default function AdminCollections() {
   const [addCollectionOption] = useAddCollectionOptionMutation();
   const [editCollectionOption] = useEditCollectionOptionMutation();
   const [deleteCollectionOption] = useDeleteCollectionOptionMutation();
+  const [uploadColImage] = useUploadCollectionImageMutation();
+  const [deleteColImage] = useDeleteCollectionImageMutation();
   const { data: collectionsAdmin, isLoading } =
     useGetAllCollectionsAdminQuery();
   const [collections, setCollections] = useState([]);
@@ -64,7 +66,7 @@ export default function AdminCollections() {
       setCollections(collectionsAdmin.collections);
       setCollectionsCount(collectionsAdmin.totalCount);
     }
-  }, [collectionsAdmin]);
+  }, [collectionsAdmin, deleteColImage]);
 
   const columns = [
     {
@@ -129,6 +131,7 @@ export default function AdminCollections() {
               onClick={() => {
                 setIsAddImageModalOpen(true);
                 setActiveColId(val.id);
+                setCurrentCollection(val);
               }}
               className="text-lg text-amber cursor-pointer hover:opacity-85 duration-100"
             >
@@ -190,6 +193,7 @@ export default function AdminCollections() {
           optionEnId: en.id,
           optionRuId: ru.id,
           optionTrId: tr.id,
+          medias: col.medias ? col.medias : [],
         };
       })
     : [];
@@ -498,17 +502,14 @@ export default function AdminCollections() {
         </Form>
       </Modal>
 
-      {/* <ImageUpload
+      <ImageUpload
         openModal={isAddImageModalOpen}
         setOpenModal={setIsAddImageModalOpen}
         itemId={activeColId}
-        uploadMethod={updateColImage}
-        getMethod={getOneCollection}
+        uploadMethod={uploadColImage}
         deleteMethod={deleteColImage}
-        pageUpdate={pageUpdate}
-
-        setPageUpdate={setPageUpdate}
-      /> */}
+        currentItem={currentCollection}
+      />
     </div>
   );
 }

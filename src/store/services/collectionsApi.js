@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./refresh";
-import { deleteCollection, editCollectionOption } from "../adminCollection";
 
 export const collectionsApi = createApi({
   reducerPath: "collectionsApi",
