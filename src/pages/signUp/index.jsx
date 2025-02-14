@@ -87,7 +87,7 @@ const UserForm = () => {
             span: 32,
           }}
           labelWrap={false}
-          onFinish={isVerify ? handleVerification : handleRegistration}
+          onFinish={handleRegistration}
         >
           <Form.Item name="fullname" className="w-[100%]">
             <Input

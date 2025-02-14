@@ -58,14 +58,14 @@ export const collectionsApi = createApi({
         method: "POST",
         body: img.image,
       }),
-      invalidatesTags: ["Category"],
+      invalidatesTags: ["Collection"],
     }),
     deleteCollectionImage: builder.mutation({
       query: (id) => ({
         url: `/collection/image/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Category"],
+      invalidatesTags: ["Collection"],
     }),
   }),
 });

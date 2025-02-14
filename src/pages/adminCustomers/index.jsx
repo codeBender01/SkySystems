@@ -1,8 +1,4 @@
-import { useEffect } from "react";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import { getAllClients } from "../../store/clients";
+import { useGetAllClientsQuery } from "../../store/services/clientsApi";
 
 import Panel from "../../components/adminPanel";
 import { Button, Input } from "antd";
@@ -14,13 +10,7 @@ import { LuArrowDownUp } from "react-icons/lu";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminCustomers() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllClients());
-  }, []);
-
-  const clients = useSelector((state) => state.clients.clients);
+  const { data: clients } = useGetAllClientsQuery();
 
   const columns = [
     {
@@ -83,7 +73,7 @@ export default function AdminCustomers() {
   ];
 
   const rows = clients
-    ? clients.map((c) => {
+    ? clients.clients.map((c) => {
         return {
           key: c.id,
           id: c.id,

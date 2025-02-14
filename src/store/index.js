@@ -18,6 +18,8 @@ import { ordersApi } from "./services/ordersApi.js";
 import { clientCategories } from "./services/clientCats.js";
 import { clientCols } from "./services/clientCols.js";
 import { clientProducts } from "./services/clientProducts.js";
+import { adminsApi } from "./services/adminsApi.js";
+import { clientsApi } from "./services/clientsApi.js";
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +38,8 @@ export const store = configureStore({
     [clientCategories.reducerPath]: clientCategories.reducer,
     [clientCols.reducerPath]: clientCols.reducer,
     [clientProducts.reducerPath]: clientProducts.reducer,
+    [adminsApi.reducerPath]: adminsApi.reducer,
+    [clientsApi.reducerPath]: clientsApi.reducer,
     authSlice,
   },
   middleware: (getDefaultMiddleware) =>
@@ -48,6 +52,8 @@ export const store = configureStore({
       sizesApi.middleware,
       ordersApi.middleware,
       clientCategories.middleware,
-      clientCols.middleware
+      clientCols.middleware,
+      adminsApi.middleware,
+      clientsApi.middleware
     ),
 });

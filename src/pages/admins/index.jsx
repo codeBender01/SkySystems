@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
-
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 import {
-  getAllAdmins,
-  createAdmin,
-  editAdmin,
-  deleteAdmin,
-} from "../../store/admins";
+  useGetAllAdminsQuery,
+  useCreateAdminMutation,
+  useDeleteAdminMutation,
+  useEditAdminMutation,
+} from "../../store/services/adminsApi";
 
 import Panel from "../../components/adminPanel";
 import { Button, Input, Popconfirm, Modal, Form, message } from "antd";
@@ -19,7 +17,10 @@ import { MdDelete } from "react-icons/md";
 const textClassname = "text-sm font-main text-textGray";
 
 export default function AdminUsers() {
-  const [pageUpdate, setPageUpdate] = useState(false);
+  const [createAdmin] = useCreateAdminMutation();
+  const [deleteAdmin] = useDeleteAdminMutation();
+  const [editAdmin] = useEditAdminMutation();
+
   const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
   const [isEditAdminModalOpen, setIsEditAdminModalOpen] = useState(false);
   const [newAdmin, setNewAdmin] = useState({
@@ -30,13 +31,7 @@ export default function AdminUsers() {
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllAdmins());
-  }, [pageUpdate]);
-
-  const admins = useSelector((state) => state.admins.admins);
+  const { data: admins } = useGetAllAdminsQuery();
 
   const columns = [
     {
@@ -59,7 +54,6 @@ export default function AdminUsers() {
           <div className="flex items-center justify-center gap-2 cursor-pointer">
             <div
               onClick={() => {
-                console.log(val);
                 setCurrentAdmin(val);
                 setIsEditAdminModalOpen(true);
               }}
@@ -72,15 +66,9 @@ export default function AdminUsers() {
               title="Delete the admin"
               description="Are you sure to delete this admin?"
               icon={<FaQuestion style={{ color: "red" }} />}
-              onConfirm={() => {
-                dispatch(deleteAdmin(val.id)).then((res) => {
-                  displayMessage(res);
-                  setPageUpdate(true);
-                });
-
-                setTimeout(() => {
-                  setPageUpdate(false);
-                }, 2000);
+              onConfirm={async () => {
+                const res = await deleteAdmin(val.id);
+                displayMessage(res);
               }}
             >
               <div className="text-lg text-deleteRed cursor-pointer hover:opacity-85 duration-100">
@@ -94,7 +82,7 @@ export default function AdminUsers() {
   ];
 
   const rows = admins
-    ? admins.map((ad) => {
+    ? admins.admins.map((ad) => {
         return {
           key: ad.id,
           id: ad.id,
@@ -115,42 +103,22 @@ export default function AdminUsers() {
       type: "success",
       content: "Success!",
     });
-
-    setTimeout(() => {
-      setPageUpdate(false);
-    }, 2000);
   };
 
-  const handleAddAdmin = () => {
-    dispatch(createAdmin(newAdmin)).then((res) => {
-      displayMessage(res);
-      setIsAddAdminModalOpen(false);
-      setPageUpdate(true);
-      setNewAdmin({
-        username: "",
-        password: "",
-      });
-    });
+  const handleAddAdmin = async () => {
+    const res = await createAdmin(newAdmin);
+    displayMessage(res);
   };
 
-  const handleEditAdmin = () => {
-    dispatch(
-      editAdmin({
-        id: currentAdmin.id,
-        admin: {
-          username: currentAdmin.username,
-          password: currentAdmin.password,
-        },
-      })
-    ).then((res) => {
-      displayMessage(res);
-      setIsEditAdminModalOpen(false);
-      setPageUpdate(true);
-      setCurrentAdmin({
-        username: "",
-        password: "",
-      });
+  const handleEditAdmin = async () => {
+    const res = await editAdmin({
+      id: currentAdmin.id,
+      admin: {
+        username: currentAdmin.username,
+        password: currentAdmin.password,
+      },
     });
+    displayMessage(res);
   };
 
   return (

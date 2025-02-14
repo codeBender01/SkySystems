@@ -8,7 +8,6 @@ export const ordersApi = createApi({
     getOrders: builder.query({
       query: () => {
         let queryString = "/orders/admin/clients";
-
         return queryString;
       },
     }),
