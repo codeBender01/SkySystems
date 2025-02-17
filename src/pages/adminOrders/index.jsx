@@ -11,6 +11,8 @@ import { LuSearch } from "react-icons/lu";
 import { BsThreeDots } from "react-icons/bs";
 import { LuArrowDownUp } from "react-icons/lu";
 
+import product from "../../assets/pr.png";
+
 const textClassname = "text-sm font-main text-textGray";
 
 const statuses = [
@@ -159,7 +161,7 @@ export default function AdminOrders() {
             key: o.id,
             img: o.orderItems[0]
               ? o?.orderItems[0]?.size?.medias[0]?.filePath
-              : img,
+              : product,
             orderId: o.orderItems[0] ? o.orderItems[0].orderId : "",
             date: o.shipping[0]
               ? o.shipping[0].dateOfDelivery + ", " + o.shipping[0].deliveryTime
