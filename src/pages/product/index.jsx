@@ -14,16 +14,18 @@ import cartItem from "../../assets/carditem.png";
 import color from "../../assets/productSmall.png";
 import productBig from "../../assets/productBig.png";
 
+import { useAddToBasketMutation } from "../../store/services/basketApi";
+
 import "./product.scss";
 import "swiper/css/navigation";
 import "swiper/css";
 
 const ProductPage = () => {
   const { categoryTitle, productId } = useParams();
+  const [addToBasket] = useAddToBasketMutation();
 
   const { data: oneProduct } = useGetOneClientProductQuery(productId);
 
-  console.log(oneProduct);
   const location = useLocation();
   const product = location.state;
   const dispatch = useDispatch();
@@ -35,16 +37,18 @@ const ProductPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
-    setClientInfo(JSON.parse(localStorage.getItem("clientInfo")));
+    setClientInfo(JSON.parse(localStorage.getItem("client")));
   }, []);
 
   useEffect(() => {
     if (oneProduct) {
       setSelectedImage(
-        oneProduct.product.colors[0].sizes[0].medias[0].filePath
+        oneProduct.product?.colors[0]?.sizes[0]?.medias[0]?.filePath
+          ? oneProduct.product?.colors[0]?.sizes[0]?.medias[0]?.filePath
+          : productBig
       );
     }
-  }, [oneProduct]);
+  }, [oneProduct, clientInfo]);
 
   const colors = [
     { id: "23479", name: "Color 1", image: color },
@@ -64,30 +68,23 @@ const ProductPage = () => {
     setSelectedImage(color.image);
   };
 
-  const handleAddToBasket = () => {
-    dispatch(
-      addToBasket({
-        id: clientInfo.id,
-        product: {
-          quantity: quantity,
-          colorId: product.colors[0].id,
-          sizeId: product.colors[0].sizes[0].id,
-          productId: product.id,
-        },
-      })
-    ).then((res) => {
-      if (res.error && res.error.message === "Rejected") {
-        messageApi.open({
-          type: "error",
-          content: "Error",
-        });
-        return;
-      }
-      messageApi.open({
-        type: "success",
-        content: "Success!",
-      });
+  const displayMessage = (res) => {
+    if (res.data) {
+      messageApi.success("Success!");
+    } else if (res.error.status === 409) {
+      messageApi.error("You already added this product!");
+    }
+  };
+
+  const handleAddToBasket = async () => {
+    const res = await addToBasket({
+      quantity: quantity,
+      colorId: product.colors[0].id,
+      sizeId: product.colors[0].sizes[0].id,
+      productId: product.id,
     });
+
+    displayMessage(res);
   };
 
   return (

@@ -8,6 +8,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 import { useGetAllClientCategoriesQuery } from "../../store/services/clientCats";
+import { useGetAllClientCollectionsQuery } from "../../store/services/clientCols";
+import { useGetAllClientProductsQuery } from "../../store/services/clientProducts";
 
 import product from "../../assets/productBig.png";
 import product2 from "../../assets/Rectangle2.png";
@@ -24,6 +26,8 @@ export default function NewHome() {
   const navigate = useNavigate();
 
   const { data: cats } = useGetAllClientCategoriesQuery();
+  const { data: collections } = useGetAllClientCollectionsQuery();
+  const { data: products } = useGetAllClientProductsQuery();
 
   return (
     <div>
@@ -75,6 +79,64 @@ export default function NewHome() {
                   <div
                     key={n}
                     className="w-[48%] md:w-[22%] flex flex-col items-center"
+                    onClick={() => {
+                      navigate("/items/categories");
+                    }}
+                  >
+                    <div
+                      className="w-[100%] h-[280px] relative"
+                      onMouseEnter={() => {
+                        setHoveredImgId(n);
+                        setIsHovered(true);
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredImgId(null);
+                        setIsHovered(false);
+                      }}
+                    >
+                      <img
+                        src={n.medias[0] ? n.medias[0].filePath : product2}
+                        alt=""
+                        className={`image ${
+                          isHovered && hoveredImgId === n
+                            ? "fade-out"
+                            : "fade-in"
+                        }`}
+                      />
+                      <img
+                        src={n.medias[1] ? n.medias[1].filePath : product3}
+                        alt=""
+                        className={`image ${
+                          isHovered && hoveredImgId === n
+                            ? "fade-in"
+                            : "fade-out"
+                        }`}
+                      />
+                      <div className="absolute top-2 right-2">
+                        <FiHeart />
+                      </div>
+                    </div>
+                    <div className="text-[#606060] text-sm font-mul ">
+                      {n.options[0].title}
+                    </div>
+                  </div>
+                );
+              })
+            : null}
+        </div>
+      </div>
+      <div className="px-[20px] md:px-[120px] flex flex-col items-center mt-[30px]">
+        <div className="text-lg text-[#606060] font-cat">Collections</div>
+        <div className="flex justify-between items-center w-[100%] flex-wrap gap-2">
+          {collections
+            ? collections.collections.map((n) => {
+                return (
+                  <div
+                    key={n}
+                    className="w-[48%] md:w-[22%] flex flex-col items-center"
+                    onClick={() => {
+                      navigate("/items/collections");
+                    }}
                   >
                     <div
                       className="w-[100%] h-[280px] relative"
@@ -120,27 +182,28 @@ export default function NewHome() {
       </div>
 
       <div className="mt-[70px] px-[20px] flex-col md:px-[120px] md:flex-row w-[100%] gap-2 md:gap-0 flex items-center justify-between">
-        <div className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom">
-          <img
-            src={product}
-            className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"
-            alt=""
-          />
-        </div>
-        <div className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom">
-          <img
-            src={product2}
-            className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"
-            alt=""
-          />
-        </div>
-        <div className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom">
-          <img
-            src={product3}
-            className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"
-            alt=""
-          />
-        </div>
+        {products
+          ? products.products.map((pr) => {
+              return (
+                <div
+                  onClick={() => {
+                    navigate("/items/allProducts");
+                  }}
+                  className="w-[100%] md:w-[32%] h-[380px] overflow-hidden group/zoom"
+                >
+                  <img
+                    src={
+                      pr.sizes && pr.sizes.medias[0]
+                        ? pr.sizes.medias[0].filePath
+                        : product
+                    }
+                    className="object-cover w-[100%] h-[100%] group-hover/zoom:scale-125 duration-300"
+                    alt=""
+                  />
+                </div>
+              );
+            })
+          : null}
       </div>
 
       <div className="w-[100%] h-[700px] mt-4">

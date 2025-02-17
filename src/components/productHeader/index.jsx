@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { FaBars } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
@@ -10,10 +10,20 @@ import { LiaTelegram } from "react-icons/lia";
 import styles from "./productHeader.module.scss";
 import { HashLink } from "react-router-hash-link";
 
+import axios from "axios";
+
+import Cookies from "universal-cookie";
+
 import logo from "../../assets/skylogo.svg";
+
+const cookies = new Cookies();
 
 const ProductHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const token = cookies.get("userAccessToken");
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -41,12 +51,27 @@ const ProductHeader = () => {
             </Link>
           </div>
           <div className={styles.auth}>
-            <Link
-              style={{ borderLeft: "1px solid black" }}
-              to={"/client-auth/signup"}
-            >
-              Sign in
-            </Link>
+            {token ? (
+              <div
+                className="p-8"
+                onClick={async () => {
+                  cookies.remove("userAccessToken");
+                  cookies.remove("userRefreshToken");
+                  navigate("/");
+                }}
+                style={{ borderLeft: "1px solid black" }}
+              >
+                Logout
+              </div>
+            ) : (
+              <Link
+                style={{ borderLeft: "1px solid black" }}
+                to={"/client-auth/signup"}
+              >
+                Sign in
+              </Link>
+            )}
+
             <Link
               style={{ borderLeft: "1px solid black" }}
               to={"/items/checkout"}

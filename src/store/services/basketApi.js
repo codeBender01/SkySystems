@@ -1,29 +1,60 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+
+const TOKEN = cookies.get("userAccessToken");
 
 export const basketApi = createApi({
-    reducerPath: "basketApi",
-    baseQuery: fetchBaseQuery({
-      baseUrl: import.meta.env.VITE_BASE_URL,
-      prepareHeaders: (headers) => {
-        headers.set("Authorization", `Bearer ${TOKEN}`);
-        return headers;
+  reducerPath: "basketApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_BASE_URL,
+    prepareHeaders: (headers) => {
+      headers.set("Authorization", `Bearer ${TOKEN}`);
+      return headers;
+    },
+  }),
+  tagTypes: ["Basket"],
+  endpoints: (builder) => ({
+    addToBasket: builder.mutation({
+      query: (obj) => ({
+        url: `/basket/add`,
+        method: "POST",
+        body: {
+          quantity: obj.quantity,
+          colorId: obj.colorId,
+          sizeId: obj.sizeId,
+          productId: obj.productId,
+        },
+      }),
+    }),
+    getMyBasket: builder.query({
+      query: () => {
+        return "/basket/my-basket";
       },
+      providesTags: ["Basket"],
     }),
-    endpoints: (builder) => ({
-      getAllClientProducts: builder.query({
-        query: () => {
-          let queryString = "/products/client";
-  
-          return queryString;
-        },
+    deleteFromBasket: builder.mutation({
+      query: (id) => ({
+        url: `/basket/remove/${id}`,
+        method: "DELETE",
       }),
-      getOneClientProduct: builder.query({
-        query: (id) => {
-          return `/products/client/${id}`;
-        },
+      invalidatesTags: ["Basket"],
+    }),
+
+    orderProduct: builder.mutation({
+      query: (obj) => ({
+        url: "/orders/client/create-order",
+        method: "POST",
+        body: obj,
       }),
     }),
-  });
-  
-  export const { useGetAllClientProductsQuery, useGetOneClientProductQuery } =
-    basketApi;
+  }),
+});
+
+export const {
+  useAddToBasketMutation,
+  useGetMyBasketQuery,
+  useDeleteFromBasketMutation,
+  useOrderProductMutation,
+} = basketApi;

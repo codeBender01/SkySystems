@@ -4,17 +4,18 @@ import { useNavigate } from "react-router";
 
 import Cookies from "universal-cookie";
 
-import { loginUser } from "../../store/userAuth";
-
 import { Input, Form, Button } from "antd";
 
 import login from "../../assets/login.jpeg";
+
+import { useUserLoginMutation } from "../../store/services/auth";
 
 import "../../antd.css";
 
 const cookies = new Cookies();
 
 const LoginForm = () => {
+  const [userLogin] = useUserLoginMutation();
   const [loginData, setLoginData] = useState({
     phone: "",
     password: "",
@@ -23,13 +24,15 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    dispatch(loginUser(loginData)).then((res) => {
-      cookies.set("userAccessToken", res.payload.accessToken);
-      cookies.set("userRefreshToken", res.payload.refreshToken);
-      localStorage.setItem("clientInfo", JSON.stringify(res.payload.client));
+  const handleLogin = async () => {
+    const res = await userLogin(loginData);
+    console.log(res);
+    if (res.data) {
+      cookies.set("userAccessToken", res.data.accessToken);
+      cookies.set("userRefreshToken", res.data.refreshToken);
+      localStorage.setItem("client", JSON.stringify(res.data.client));
       navigate("/");
-    });
+    }
   };
 
   return (

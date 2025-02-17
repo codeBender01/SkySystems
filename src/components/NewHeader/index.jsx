@@ -155,7 +155,13 @@ export default function NewHeader() {
                   {l.name === "Categories" && cats
                     ? cats.categories.map((c) => {
                         return (
-                          <li className="hover:text-blackMain duration-100">
+                          <li
+                            key={c.id}
+                            onClick={() => {
+                              navigate("/items/categories");
+                            }}
+                            className="hover:text-blackMain duration-100"
+                          >
                             {c.options[0].title}
                           </li>
                         );
@@ -164,7 +170,13 @@ export default function NewHeader() {
                   {l.name === "Collections" && cols
                     ? cols.collections.map((c) => {
                         return (
-                          <li className="hover:text-blackMain duration-100">
+                          <li
+                            key={c.id}
+                            onClick={() => {
+                              navigate("/items/collections");
+                            }}
+                            className="hover:text-blackMain duration-100"
+                          >
                             {c.options[0].title}
                           </li>
                         );

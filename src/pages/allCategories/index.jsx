@@ -11,8 +11,6 @@ function AllCategories() {
 
   const { data: cats } = useGetAllClientCategoriesQuery();
 
-  console.log(cats);
-
   return (
     <>
       <div className={styles.App}>

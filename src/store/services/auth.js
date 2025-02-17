@@ -4,10 +4,16 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
+const TOKEN = cookies.get("userAccesstoken");
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: baseURL,
+    prepareHeaders: (headers) => {
+      headers.set("Authorization", `Bearer ${TOKEN}`);
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     adminLogin: builder.mutation({
@@ -34,8 +40,10 @@ export const authApi = createApi({
     verifyUser: builder.mutation({
       query: (creds) => ({
         url: `/client/auth/${creds.id}/verify`,
-        method: "POST",
-        body: creds.code,
+        method: "PATCH",
+        body: {
+          verificationPhoneNumberCode: creds.verificationPhoneNumberCode,
+        },
       }),
     }),
   }),

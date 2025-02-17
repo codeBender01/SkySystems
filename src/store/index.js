@@ -20,6 +20,7 @@ import { clientCols } from "./services/clientCols.js";
 import { clientProducts } from "./services/clientProducts.js";
 import { adminsApi } from "./services/adminsApi.js";
 import { clientsApi } from "./services/clientsApi.js";
+import { basketApi } from "./services/basketApi.js";
 
 export const store = configureStore({
   reducer: {
@@ -40,6 +41,7 @@ export const store = configureStore({
     [clientProducts.reducerPath]: clientProducts.reducer,
     [adminsApi.reducerPath]: adminsApi.reducer,
     [clientsApi.reducerPath]: clientsApi.reducer,
+    [basketApi.reducerPath]: basketApi.reducer,
     authSlice,
   },
   middleware: (getDefaultMiddleware) =>
@@ -54,6 +56,8 @@ export const store = configureStore({
       clientCategories.middleware,
       clientCols.middleware,
       adminsApi.middleware,
-      clientsApi.middleware
+      clientsApi.middleware,
+      clientProducts.middleware,
+      basketApi.middleware
     ),
 });

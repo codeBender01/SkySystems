@@ -69,6 +69,13 @@ export const categoriesApi = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
+    changeOrderStatus: builder.mutation({
+      query: (obj) => ({
+        url: `/orders/admin/${obj.id}`,
+        method: "PATCH",
+        body: obj.body,
+      }),
+    }),
   }),
 });
 
@@ -83,4 +90,5 @@ export const {
   useUploadCategoryImageMutation,
   useGetOneCategoryQuery,
   useDeleteCategoryImageMutation,
+  useChangeOrderStatusMutation,
 } = categoriesApi;

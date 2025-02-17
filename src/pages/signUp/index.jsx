@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 import {
@@ -9,24 +8,22 @@ import {
 
 import Cookies from "universal-cookie";
 
-import { registerUser, verifyUser } from "../../store/userAuth";
-
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 
 import login from "../../assets/login.jpeg";
 
 const cookies = new Cookies();
 
 const UserForm = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [register] = useUserRegisterMutation();
   const [verify] = useVerifyUserMutation();
 
   const [isVerify, setIsVerify] = useState();
+  const [messageApi, contextHolder] = message.useMessage();
   const [clientId, setClientId] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationPhoneNumberCode, setVerificationCode] = useState("");
   const [registerData, setRegisterData] = useState({
     firstName: "",
     phone: "",
@@ -38,36 +35,42 @@ const UserForm = () => {
     apartmentNumber: "",
   });
 
+  const displayMessage = (res) => {
+    if (res.data) {
+      messageApi.success("Success!");
+    } else if (res.error) {
+      messageApi.error("Error!");
+    }
+  };
+
   const handleRegistration = async () => {
     for (let r in registerData) {
       if (registerData[r] === "") {
         return;
       }
-      setIsVerify(true);
       const res = await register(registerData);
-      console.log(res);
+      if (res.data) {
+        setIsVerify(true);
+        displayMessage(res);
+        setClientId(res.data.client.id);
+        return;
+      }
+
+      displayMessage(res);
     }
   };
 
   const handleVerification = async () => {
-    // dispatch(
-    //   verifyUser({
-    //     id: clientId,
-    //     code: verificationCode,
-    //   }).then((res) => {
-    //     cookies.set("userAccessToken", res.payload.accessToken);
-    //     cookies.set("userRefreshToken", res.payload.refreshToken);
-    //     localStorage.setItem("clientInfo", JSON.stringify(res.payload.client));
-    //     navigate("/");
-    //   })
-    // );
-
-    const res = await verifyUser({
+    const creds = {
       id: clientId,
-      code: verificationCode,
-    });
+      verificationPhoneNumberCode,
+    };
+    const res = await verify(creds);
 
-    console.log(res);
+    cookies.set("userAccessToken", res.data.accessToken);
+    cookies.set("userRefreshToken", res.data.refreshToken);
+    localStorage.setItem("client", JSON.stringify(res.data.client));
+    navigate("/");
   };
 
   return (
@@ -75,6 +78,7 @@ const UserForm = () => {
       className="flex-col flex items-center justify-between pl-0 md:flex-row md:pl-12 md:items-start"
       id="login"
     >
+      {contextHolder}
       <div className="pt-16 mb-4 flex flex-col md:w-[40%] md:mb-0 w-[90%]">
         <div className="text-[20px] font-mul self-start">
           Be part of
@@ -87,7 +91,7 @@ const UserForm = () => {
             span: 32,
           }}
           labelWrap={false}
-          onFinish={handleRegistration}
+          onFinish={isVerify ? handleVerification : handleRegistration}
         >
           <Form.Item name="fullname" className="w-[100%]">
             <Input
