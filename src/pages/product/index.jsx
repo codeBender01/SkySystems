@@ -213,7 +213,6 @@ const ProductPage = () => {
           </div>
         </div>
       </main>
-      <div>jjj</div>
     </div>
   );
 };
