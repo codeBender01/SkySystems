@@ -211,7 +211,13 @@ export default function AdminSizes() {
   const handleEditProductSize = async () => {
     const res = await editProductSize({
       id: currentSize.id,
-      obj: editedSize,
+      obj: {
+        size: currentSize.size,
+        quantity: currentSize.quantity,
+        price: currentSize.price,
+        barcode: currentSize.barcode,
+        isActive: currentSize.isActive,
+      },
     });
 
     displayMessage(res);
@@ -412,8 +418,8 @@ export default function AdminSizes() {
             <Input
               className="border-b1 border-greenBlue"
               onChange={(e) => {
-                setEditedSize({
-                  ...editedSize,
+                setCurrentSize({
+                  ...currentSize,
                   size: e.target.value,
                 });
               }}
@@ -432,8 +438,8 @@ export default function AdminSizes() {
             <Input
               className="border-b1 border-greenBlue"
               onChange={(e) => {
-                setEditedSize({
-                  ...editedSize,
+                setCurrentSize({
+                  ...currentSize,
                   quantity: e.target.value,
                 });
               }}
@@ -453,8 +459,8 @@ export default function AdminSizes() {
             <Input
               className="border-b1 border-greenBlue"
               onChange={(e) => {
-                setEditedSize({
-                  ...editedSize,
+                setCurrentSize({
+                  ...currentSize,
                   price: e.target.value,
                 });
               }}
@@ -474,8 +480,8 @@ export default function AdminSizes() {
             <Input
               className="border-b1 border-greenBlue"
               onChange={(e) => {
-                setEditedSize({
-                  ...editedSize,
+                setCurrentSize({
+                  ...currentSize,
                   barcode: e.target.value,
                 });
               }}

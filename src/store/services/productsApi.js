@@ -62,4 +62,5 @@ export const {
   useDeleteProductMutation,
   useEditProductOptionsMutation,
   useDeleteProductOptionMutation,
+  useEditProductSizeMutation,
 } = productsApi;

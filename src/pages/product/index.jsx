@@ -27,6 +27,8 @@ const ProductPage = () => {
   const location = useLocation();
   const product = location.state;
 
+  console.log(product.product);
+
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("23479");
   const [selectedImage, setSelectedImage] = useState(productBig);
@@ -76,8 +78,8 @@ const ProductPage = () => {
   const handleAddToBasket = async () => {
     const res = await addToBasket({
       quantity: quantity,
-      colorId: product.colors[0].id,
-      sizeId: product.colors[0].sizes[0].id,
+      colorId: product?.product?.colors[0]?.id,
+      sizeId: product?.product?.colors[0]?.sizes[0]?.id,
       productId: productId,
     });
 
