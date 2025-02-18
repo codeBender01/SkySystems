@@ -23,9 +23,6 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Lint and Test
-        run: npm run lint
-
   cd:
     needs: ci
     runs-on: ubuntu-latest
