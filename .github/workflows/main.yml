@@ -52,5 +52,5 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@38.180.204.124 "rm -rf /var/www/html/dist && mkdir -p /var/www/html/dist"
-          scp -i ~/.ssh/id_rsa -r ./dist/* root@38.180.204.124:/var/www/html/dist
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@38.180.165.48 "rm -rf /var/www/html/dist && mkdir -p /var/www/html/dist"
+          scp -i ~/.ssh/id_rsa -r ./dist/* root@38.180.165.48:/var/www/html/dist
