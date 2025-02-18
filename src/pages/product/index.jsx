@@ -27,8 +27,6 @@ const ProductPage = () => {
   const location = useLocation();
   const product = location.state;
 
-  console.log(product.product);
-
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("23479");
   const [selectedImage, setSelectedImage] = useState(productBig);

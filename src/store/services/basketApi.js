@@ -1,19 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import Cookies from "universal-cookie";
-
-const cookies = new Cookies();
-
-const TOKEN = cookies.get("userAccessToken");
 
 export const basketApi = createApi({
   reducerPath: "basketApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
     prepareHeaders: (headers) => {
-      headers.set("Authorization", `Bearer ${TOKEN}`);
+      const token = localStorage.getItem("userAccessToken");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   }),
+
   tagTypes: ["Basket", "Product"],
   endpoints: (builder) => ({
     addToBasket: builder.mutation({

@@ -1,10 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import baseURL from "./base.js";
-import Cookies from "universal-cookie";
 
-const cookies = new Cookies();
-
-const TOKEN = cookies.get("userAccesstoken");
+const TOKEN = localStorage.getItem("userAccessToken");
 
 export const authApi = createApi({
   reducerPath: "authApi",

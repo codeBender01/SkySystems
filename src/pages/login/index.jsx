@@ -28,8 +28,7 @@ const LoginForm = () => {
     if (res.data) {
       localStorage.setItem("userAccessToken", res.data.accessToken);
       localStorage.setItem("userRefreshToken", res.data.refreshToken);
-      cookies.set("userAccessToken", res.data.accessToken);
-      cookies.set("userRefreshToken", res.data.refreshToken);
+
       localStorage.setItem("client", JSON.stringify(res.data.client));
       navigate("/");
     }

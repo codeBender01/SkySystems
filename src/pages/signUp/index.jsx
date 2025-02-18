@@ -67,8 +67,8 @@ const UserForm = () => {
     };
     const res = await verify(creds);
 
-    cookies.set("userAccessToken", res.data.accessToken);
-    cookies.set("userRefreshToken", res.data.refreshToken);
+    localStorage.setItem("userAccessToken", res.data.accessToken);
+    localStorage.setItem("userRefreshToken", res.data.refreshToken);
     localStorage.setItem("client", JSON.stringify(res.data.client));
     navigate("/");
   };
