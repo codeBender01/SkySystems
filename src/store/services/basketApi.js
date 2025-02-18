@@ -14,7 +14,7 @@ export const basketApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Basket"],
+  tagTypes: ["Basket", "Product"],
   endpoints: (builder) => ({
     addToBasket: builder.mutation({
       query: (obj) => ({
@@ -27,6 +27,7 @@ export const basketApi = createApi({
           productId: obj.productId,
         },
       }),
+      invalidatesTags: ["Product"],
     }),
     getMyBasket: builder.query({
       query: () => {
@@ -49,6 +50,12 @@ export const basketApi = createApi({
         body: obj,
       }),
     }),
+    getOneClientProductBasket: builder.query({
+      query: (id) => {
+        return `/products/client/${id}`;
+      },
+      providesTags: ["Product"],
+    }),
   }),
 });
 
@@ -57,4 +64,5 @@ export const {
   useGetMyBasketQuery,
   useDeleteFromBasketMutation,
   useOrderProductMutation,
+  useGetOneClientProductBasketQuery,
 } = basketApi;

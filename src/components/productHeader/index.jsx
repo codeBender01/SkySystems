@@ -20,10 +20,14 @@ const cookies = new Cookies();
 
 const ProductHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [state, setSomeState] = useState(null);
 
-  const navigate = useNavigate();
-
-  const token = cookies.get("userAccessToken");
+  const token = localStorage.getItem("userAccessToken");
+  useEffect(() => {
+    if (token) {
+      setSomeState(true);
+    }
+  }, [token]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -51,13 +55,16 @@ const ProductHeader = () => {
             </Link>
           </div>
           <div className={styles.auth}>
-            {token ? (
+            {state ? (
               <div
-                className="p-8"
-                onClick={async () => {
+                className="p-8 cursor-pointer"
+                onClick={() => {
+                  localStorage.removeItem("userAccessToken");
+                  localStorage.removeItem("userRefreshToken");
                   cookies.remove("userAccessToken");
                   cookies.remove("userRefreshToken");
-                  navigate("/");
+                  window.location.reload();
+                  setSomeState(false);
                 }}
                 style={{ borderLeft: "1px solid black" }}
               >

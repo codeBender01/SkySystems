@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-
-import { addToBasket } from "../../store/basket";
-
-import { useGetOneClientProductQuery } from "../../store/services/clientProducts";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { message } from "antd";
+import { message, Button } from "antd";
 
 import cartItem from "../../assets/carditem.png";
 import color from "../../assets/productSmall.png";
 import productBig from "../../assets/productBig.png";
 
-import { useAddToBasketMutation } from "../../store/services/basketApi";
+import {
+  useAddToBasketMutation,
+  useGetOneClientProductBasketQuery,
+} from "../../store/services/basketApi";
 
 import "./product.scss";
 import "swiper/css/navigation";
@@ -24,11 +22,10 @@ const ProductPage = () => {
   const { categoryTitle, productId } = useParams();
   const [addToBasket] = useAddToBasketMutation();
 
-  const { data: oneProduct } = useGetOneClientProductQuery(productId);
+  const { data: oneProduct } = useGetOneClientProductBasketQuery(productId);
 
   const location = useLocation();
   const product = location.state;
-  const dispatch = useDispatch();
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("23479");
@@ -81,7 +78,7 @@ const ProductPage = () => {
       quantity: quantity,
       colorId: product.colors[0].id,
       sizeId: product.colors[0].sizes[0].id,
-      productId: product.id,
+      productId: productId,
     });
 
     displayMessage(res);
@@ -136,7 +133,7 @@ const ProductPage = () => {
                 </button>
               </div>
             </div>
-            <p>Minimal quantity - 10</p>
+            <p>Minimal quantity - 1</p>
 
             <p>
               In stock - {oneProduct?.product?.colors[0]?.sizes[0]?.quantity}
@@ -185,12 +182,15 @@ const ProductPage = () => {
                 <div className="swiper-button-prev"></div>
                 <div className="swiper-button-next"></div>
               </div>
-              <button
+              <Button
                 onClick={handleAddToBasket}
-                className="add-to-basket w-[80%] hover:opacity-85 duration-200"
+                disabled={
+                  oneProduct?.product?.colors[0]?.sizes[0]?.quantity === 0
+                }
+                className="w-[80%] hover:opacity-85 duration-200 px-[20px] py-[20px] bg-[black] text-white text-[18px]"
               >
                 Add to Basket
-              </button>
+              </Button>
             </div>
           </div>
         </div>
