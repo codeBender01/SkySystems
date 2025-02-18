@@ -75,13 +75,13 @@ const ProductPage = () => {
 
   const handleAddToBasket = async () => {
     console.log(
-      product?.product?.colors[0]?.id,
-      product?.product?.colors[0]?.sizes[0]?.id
+      oneProduct?.product?.colors[0]?.id,
+      oneProduct?.product?.colors[0]?.sizes[0]?.id
     );
     const res = await addToBasket({
       quantity: quantity,
-      colorId: product?.colors[0]?.id,
-      sizeId: product?.colors[0]?.sizes[0]?.id,
+      colorId: oneProduct?.product?.colors[0]?.id,
+      sizeId: oneProduct?.product?.colors[0]?.sizes[0]?.id,
       productId: productId,
     });
 

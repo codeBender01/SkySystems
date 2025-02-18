@@ -91,15 +91,18 @@ const CheckoutForm = () => {
                     key={pr.id}
                     className={`${styles.orderSummary} border-[1px] border-darkGray p-2 rounded-md`}
                   >
-                    <div className="gap-4" style={{ display: "flex" }}>
-                      <img
-                        src={
-                          pr.size.medias.length > 0
-                            ? pr.size.medias[0].filePath
-                            : img
-                        }
-                        alt="Snowfall"
-                      />
+                    <div className="gap-4 " style={{ display: "flex" }}>
+                      <div className="w-[45%] h-[160px]">
+                        <img
+                          src={
+                            pr.size.medias.length > 0
+                              ? pr.size.medias[0].filePath
+                              : img
+                          }
+                          alt="Snowfall"
+                          className="w-[100%] h-[100%] object-cover"
+                        />
+                      </div>
                       <div className="w-[50%]">
                         <div className="flex justify-between font-bold">
                           Product name:
