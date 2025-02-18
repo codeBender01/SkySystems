@@ -74,10 +74,14 @@ const ProductPage = () => {
   };
 
   const handleAddToBasket = async () => {
+    console.log(
+      product?.product?.colors[0]?.id,
+      product?.product?.colors[0]?.sizes[0]?.id
+    );
     const res = await addToBasket({
       quantity: quantity,
-      colorId: product?.product?.colors[0]?.id,
-      sizeId: product?.product?.colors[0]?.sizes[0]?.id,
+      colorId: product?.colors[0]?.id,
+      sizeId: product?.colors[0]?.sizes[0]?.id,
       productId: productId,
     });
 
